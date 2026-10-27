@@ -56,4 +56,4 @@ The council does not replace these:
 
 ## Governance documents
 
-DECURA-DPIA-2026-001, DECURA-CSV-VAD-2026-001, DECURA-MDM-SPEC-2026-001 and DECURA-DQF-2026-001 belong in `docs/governance/`. Advisers flag when a change requires an update to one of them.
+This repository is public. The full governance documents (DECURA-DPIA-2026-001, DECURA-CSV-VAD-2026-001, DECURA-CSV-VAL-MOB-2026-001, DECURA-MDM-SPEC-2026-001, DECURA-DQF-2026-001 and penetration test reports) are kept in a private store and never committed here. `docs/governance/README.md` holds an index only. Advisers flag when a change requires an update to one of them, and are given the documents directly when a review needs them.
