@@ -50,10 +50,10 @@ Run independent reviews in parallel. Give each adviser the diff or file list, th
 ## Human sign-off required before real users
 
 The council does not replace these:
-- Independent penetration test
+- Independent penetration test before any person other than the owner uses the production system. The owner may use production with his own data only (DECURA-REL1-2026-001, section 2.1).
 - Data protection lawyer review of DECURA-DPIA-2026-001
 - Qualified human sign-off for any published skin claim
 
 ## Governance documents
 
-DECURA-DPIA-2026-001, DECURA-CSV-VAD-2026-001, DECURA-MDM-SPEC-2026-001 and DECURA-DQF-2026-001 belong in `docs/governance/`. Advisers flag when a change requires an update to one of them.
+This repository is public. The full governance documents (DECURA-DPIA-2026-001, DECURA-CSV-VAD-2026-001, DECURA-CSV-VAL-MOB-2026-001, DECURA-MDM-SPEC-2026-001, DECURA-DQF-2026-001 and penetration test reports) are kept in a private store and never committed here. `docs/governance/README.md` holds an index only. Advisers flag when a change requires an update to one of them, and are given the documents directly when a review needs them.

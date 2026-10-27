@@ -19,3 +19,16 @@ android/build/
 
 # System
 .DS_Store
+
+# Signing keys and service credentials
+*.jks
+*.keystore
+*.p8
+*service-account*.json
+credentials.json
+
+# Supabase local state and local databases
+supabase/.temp/
+*.db
+*.sqlite
+*.sqlite3
