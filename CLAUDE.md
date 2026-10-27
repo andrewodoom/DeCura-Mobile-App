@@ -50,7 +50,7 @@ Run independent reviews in parallel. Give each adviser the diff or file list, th
 ## Human sign-off required before real users
 
 The council does not replace these:
-- Independent penetration test
+- Independent penetration test before any person other than the owner uses the production system. The owner may use production with his own data only (DECURA-REL1-2026-001, section 2.1).
 - Data protection lawyer review of DECURA-DPIA-2026-001
 - Qualified human sign-off for any published skin claim
 

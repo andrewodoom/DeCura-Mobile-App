@@ -130,3 +130,40 @@ Draft 0.2 goes back to quality assurance and validation and to security and deve
 | D6 | Default accepted: governance documents private; index only in the repository. |
 
 Applied in draft 0.3. Because D1 and D5 change the security gates and the catalogue source, data engineering joins the re-review alongside quality assurance and validation and security and development operations.
+
+## 8. Re-review of draft 0.3 (27 October 2026)
+
+| Adviser | Verdict | Outcome |
+|---|---|---|
+| Security and development operations | Approve with conditions | **Block cleared.** The owner using production with only his own data is an acceptable exception; `CLAUDE.md` wording aligned. |
+| Quality assurance and validation | Approve with conditions | **Block cleared.** All original grounds resolved or resolved by the conditions below. |
+| Data engineering | Approve with conditions | Owner-curated catalogue accepted with provenance and coverage conditions. |
+
+### Conditions applied in draft 0.4
+
+| Source | Condition | Where |
+|---|---|---|
+| Security | `CLAUDE.md` penetration test rule allows the owner's own data only | `CLAUDE.md` |
+| Security | Penetration test scope: temporary tester accounts with made-up data, destructive and community tests in staging, backup first, tester agreement, retest after security-relevant changes | SEC-10, section 2.1 |
+| Security | Restoring a backup re-applies deletions instead of "never restore" | REQ-ACC-04b |
+| Security | Community view uses `security_invoker = true`, with tests | REQ-COM-06 |
+| Quality assurance | Session expiry never deletes local data | REQ-ACC-02b |
+| Quality assurance | Validation plan approved before milestone 0; installation and operational qualification through stage 0; stage 1 is performance qualification | QA-05, section 2.1, milestone 0 |
+| Quality assurance | Remaining vague wording given values or a named specification | REQ-ACC-01c, REQ-PRO-06, REQ-FIN-07, REQ-COM-03, SEC-13, section 10 |
+| Quality assurance | Audit records hold identifiers only and survive account deletion | REQ-AUD-01 |
+| Quality assurance | Random 10 percent re-check of new catalogue records; import requirements moved to milestone 0 | REQ-FIN-06d, milestone 0 |
+| Quality assurance | Exit counts exclude the owner; no made-up posts in production; penetration test fixes under change control | Section 10, REQ-COM-07, SEC-10 |
+| Quality assurance | AI cannot sign; approval table records the review file and the known limitation | Section 12 |
+| Data engineering | Primary sources only; prototype records re-checked | REQ-FIN-06a, 06b |
+| Data engineering | No prices, descriptions, claims or images | REQ-FIN-06c, section 4 |
+| Data engineering | Concern matching from ingredients only; no product-to-concern mappings | REQ-FIN-04 |
+| Data engineering | Submissions processed within 7 days, checked against a primary source | REQ-FIN-05 |
+| Data engineering | Seed template and validation script | REQ-FIN-09, section 3.9 |
+| Data engineering | Catalogue coverage gate before stage 1 | REQ-FIN-10, **decision D7** |
+| Data engineering | EU ingredient database acknowledgement | REQ-FIN-06e |
+
+### Still open outside the document
+
+- Evidence that branch protection and push-protected secret scanning are on (SEC-01, SEC-14), before milestone 0 closes.
+- Specifications to write: `docs/specs/matching-rule.md`, `docs/specs/rate-limits.md`, `docs/specs/design-system.md`; traceability matrix `docs/validation/traceability-matrix.csv`.
+- Private governance updates: DECURA-DQF-2026-001 (mobile section, display threshold, criteria without Open Beauty Facts fields), DECURA-MDM-SPEC-2026-001 (seed template, source types, submission path, brand concentration rule), DECURA-DPIA-2026-001 (Transport Layer Security wording, tester access), DECURA-CSV-VAD-2026-001 (prototype-only note).
