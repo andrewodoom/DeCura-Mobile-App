@@ -3,10 +3,10 @@
 | | |
 |---|---|
 | Document | DECURA-REL1-2026-001 |
-| Version | 1.0 (requirements baseline) |
+| Version | 1.1 (requirements baseline, minor change) |
 | Owner and author | Andrew Kofi Odoom |
 | Date | 27 October 2026 |
-| Status | Approved. All decisions D1 to D7 confirmed by the owner on 27 October 2026. Both council Blocks cleared at re-review. Approval takes effect when the owner merges pull request 2 (section 12). |
+| Status | Approved. Version 1.0 approved by the owner's merge of pull request 2 on 27 October 2026 at 18:00:46 UTC. Version 1.1 is a minor change (section 12), approved by the owner's merge of its pull request. |
 | Review record | `docs/reviews/2026-10-27-release-1-definition.md` |
 
 ## 1. Purpose
@@ -37,7 +37,7 @@ The mobile system is new software. It is validated under its own plan (QA-05), n
 | Purpose | Use the app daily, find defects, and give the penetration tester a realistic system that holds no one else's data | Learn whether the app is useful and kept in use |
 | Entry gate | Milestones 0 to 5 complete with their council reviews; every control in section 5 except SEC-10; PRIV-02 and PRIV-04; QA-01, QA-04, QA-07 and QA-11 met for the stage 0 build; installation and operational qualification executed for milestones 0 to 5 | Every gate in sections 5, 6 and 7, including the penetration test (SEC-10) and the lawyer review (PRIV-06); the catalogue coverage gate (REQ-FIN-10); milestone 6 complete |
 | Community feed | Switch off. Feed behaviour is tested in staging with test accounts and made-up test data only. | Switched on at week three of stage 1 (REQ-COM-07) |
-| Validation role | Installation and operational qualification in use | Performance qualification |
+| Validation role | Production installation qualification confirmed; penetration test. Operational qualification is completed in staging during milestones 0 to 5; the owner's own use is not counted as qualification evidence. | Performance qualification |
 | Exit | Penetration test passed with critical and major findings fixed and retested, and the lawyer review complete | The criteria in section 10 |
 
 No other person's data, including friends' or family members', enters any environment before stage 1.
@@ -214,8 +214,8 @@ All of these must be met before stage 1, when the first invited user other than 
 | SEC-06 | No health data in logs, analytics, crash reports or reminder text. No crash reporting service in the beta. Beta measurements (section 10) use counts with no health content. |
 | SEC-07 | Dependency audit shows no unresolved critical or high vulnerabilities. |
 | SEC-08 | Daily encrypted backups of the production database, held in the European Union, kept for 30 days, with one documented successful restore test before stage 0. |
-| SEC-09 | A self-assessment against the Open Worldwide Application Security Project Mobile Application Security Verification Standard, level 1, completed and filed. |
-| SEC-10 | An independent penetration test covering Supabase authentication, row-level security, storage, edge functions and the mobile app at Mobile Application Security Verification Standard level 1 is completed during stage 0, against the production system holding only the owner's data, and before stage 1. Critical and major findings are fixed through change control and retested, and the affected tests re-run (decision D1). Tester accounts holding made-up data only are added to the invite list for the test window and removed afterwards. Tests that could damage data or service, and community tests with the switch on, run in staging. Production tests run only after a fresh backup and a journal export. The tester signs a confidentiality and data processing agreement, works within the European Union or under a lawful transfer basis, and follows Supabase's penetration testing terms. Any change to authentication, row-level security, storage or edge functions after the retest and before stage 1 needs a security review, and a targeted retest if it falls within the tested scope. |
+| SEC-09 | A self-assessment against the Open Worldwide Application Security Project Mobile Application Security Verification Standard version 2, using the Mobile Application Security Testing Guide profile MAS-L1, completed and filed. |
+| SEC-10 | An independent penetration test covering Supabase authentication, row-level security, storage, edge functions and the mobile app against Mobile Application Security Verification Standard version 2, profile MAS-L1, is completed during stage 0, against the production system holding only the owner's data, and before stage 1. Critical and major findings are fixed through change control and retested, and the affected tests re-run (decision D1). Tester accounts holding made-up data only are added to the invite list for the test window and removed afterwards. Tests that could damage data or service, and community tests with the switch on, run in staging. Production tests run only after a fresh backup and a journal export. The tester signs a confidentiality and data processing agreement, works within the European Union or under a lawful transfer basis, and follows Supabase's penetration testing terms. Any change to authentication, row-level security, storage or edge functions after the retest and before stage 1 needs a security review, and a targeted retest if it falls within the tested scope. |
 | SEC-11 | Every edge function verifies the caller's token, validates input against a schema, restricts cross-origin requests, returns generic errors and reads keys only from Supabase secrets. |
 | SEC-12 | A written incident response runbook covers the 72-hour notification path under Articles 33 and 34 and key rotation steps, and is rehearsed once before stage 0. |
 | SEC-13 | Rate limits apply to sign-in, reporting, sharing, search and submissions, with values recorded in `docs/specs/rate-limits.md`. |
@@ -246,7 +246,7 @@ All of these must be met before stage 1. PRIV-02 and PRIV-04 must also be met be
 | QA-02 | Unit tests cover the matching rule, ingredient note lookup, quality score display threshold, free-text matching and export contents. |
 | QA-03 | End-to-end tests cover onboarding, logging an entry, scanning (through a test interface that supplies a decoded barcode), sharing, consent withdrawal, re-consent, sign-out and account deletion, on iOS and Android. Camera scanning is also tested manually on physical devices. |
 | QA-04 | All tests pass in continuous integration on the release candidate build. None are skipped without a documented justification. |
-| QA-05 | A new validation plan, DECURA-CSV-VAL-MOB-2026-001, approved with its risk assessment before milestone 0 starts, with its own system classification (expected: Good Automated Manufacturing Practice 5 Category 5), risk assessment, installation, operational and performance qualification, traceability matrix and summary report. The 45 prototype test cases are re-mapped as inputs; none carry over as passed. Installation and operational qualification run through milestones 0 to 5; stage 1 is the performance qualification; the summary report closes milestone 6. |
+| QA-05 | A new validation plan, DECURA-CSV-VAL-MOB-2026-001, approved with its risk assessment before milestone 0 starts, with its own system classification (expected: Good Automated Manufacturing Practice 5 Category 5), risk assessment, installation, operational and performance qualification, traceability matrix and summary report. The 44 test cases documented in the prototype validation (reported there as 45) are re-mapped as inputs; none carry over as passed. Installation and operational qualification run through milestones 0 to 5; stage 1 is the performance qualification. An interim validation report, approved as defined in DECURA-CSV-VAL-MOB-2026-001, closes milestone 6 and releases the system to stage 1; the final validation summary report follows the end of stage 1. |
 | QA-06 | Every milestone's definition of done includes a Web Content Accessibility Guidelines 2.2 level AA check: VoiceOver and TalkBack runs through every QA-03 flow, text at 200 percent, touch targets of at least 44 points, contrast of 4.5 to 1 for text and 3 to 1 for icons and controls, and no meaning carried by colour alone. |
 | QA-07 | Every council review recorded in `docs/reviews/`, with no open Block findings. |
 | QA-08 | Negative tests confirm every out-of-scope item in section 4 is absent, including no network calls to Anthropic or any external product database, and a provenance test confirming every catalogue record's source type is on the allowed list. |
@@ -304,13 +304,14 @@ DECURA-CSV-VAD-2026-001 is annotated as covering the prototype only.
 | 0.2 | 27 October 2026 | Revised after council review 2026-10-27 | Andrew Kofi Odoom, with Claude |
 | 0.3 | 27 October 2026 | Owner decisions D1 to D6 applied: two-stage beta, owner-curated catalogue without Open Beauty Facts | Andrew Kofi Odoom, with Claude |
 | 0.4 | 27 October 2026 | Re-review conditions from quality assurance, security and data engineering applied | Andrew Kofi Odoom, with Claude |
-| 1.0 | 27 October 2026 | Decision D7 confirmed; issued as the requirements baseline | Andrew Kofi Odoom, with Claude |
+| 1.0 | 27 October 2026 | Decision D7 confirmed; issued as the requirements baseline. Approved by merge of pull request 2, 18:00:46 UTC. | Andrew Kofi Odoom, with Claude |
+| 1.1 | 27 October 2026 | Minor change, no change to system behaviour: QA-05 report naming aligned with the validation plan (interim report at milestone 6, final report after stage 1); stage 0 validation role clarified; SEC-09 and SEC-10 cite the current version of the security verification standard; QA-05 corrected to the 44 documented prototype test cases | Andrew Kofi Odoom, with Claude |
 
 **Approval at version 1.0**
 
 | Role | Name | Date | Signature |
 |---|---|---|---|
-| Owner and approver | Andrew Kofi Odoom | Date of merge, recorded by GitHub | Merge of pull request 2 by the owner's GitHub account (andrewodoom). The merge record, with its timestamp and account, is the electronic approval record. |
+| Owner and approver | Andrew Kofi Odoom | 27 October 2026, 18:00:46 UTC (version 1.0) | Merge of pull request 2 by the owner's GitHub account (andrewodoom). The merge record, with its timestamp and account, is the electronic approval record. |
 | Quality review record | `docs/reviews/2026-10-27-release-1-definition.md`. There is no independent human quality approver; this is a known limitation, to be closed before public release. | | |
 
 After version 1.0, changes go through change control. A change is **minor** if it clarifies wording without changing behaviour (version 1.x) and **major** if it adds, removes or changes a requirement (version 2.0 and council review).
