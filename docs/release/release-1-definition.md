@@ -3,10 +3,10 @@
 | | |
 |---|---|
 | Document | DECURA-REL1-2026-001 |
-| Version | 0.2 (draft, revised after council review) |
+| Version | 0.3 (draft, owner decisions applied) |
 | Owner and author | Andrew Kofi Odoom |
 | Date | 27 October 2026 |
-| Status | Draft. Becomes the requirements baseline at version 1.0 once decisions D1 to D6 (section 13) are confirmed and the council re-review passes. |
+| Status | Draft. Decisions D1 to D6 confirmed by the owner on 27 October 2026 (section 13). Becomes the requirements baseline at version 1.0 once quality assurance and validation and security and development operations re-review and clear their Blocks. |
 | Review record | `docs/reviews/2026-10-27-release-1-definition.md` |
 
 ## 1. Purpose
@@ -22,11 +22,24 @@ The mobile system is new software. It is validated under its own plan (QA-05), n
 | Item | Decision |
 |---|---|
 | Platforms | iOS and Android, built from one codebase |
-| Audience | Closed beta, 20 to 50 invited adults (18 and over) |
-| Distribution | Apple TestFlight external testing (requires Apple beta review, a privacy policy address and an iOS privacy manifest) and Google Play internal or closed testing (requires the Data safety form). No public store listing. |
+| Audience | Two stages (section 2.1). Stage 0: the owner only, using his own data. Stage 1: closed beta of 20 to 50 invited adults (18 and over). |
+| Distribution | Stage 0: internal builds on the owner's own devices (TestFlight internal testing and Google Play internal testing). Stage 1: Apple TestFlight external testing (requires Apple beta review, a privacy policy address and an iOS privacy manifest) and Google Play internal or closed testing (requires the Data safety form). No public store listing. |
 | Stack | React Native with Expo (development builds, not Expo Go) and TypeScript; Supabase (PostgreSQL, authentication, storage, edge functions) in Frankfurt (eu-central-1) |
 | Data | Real user data, including special category health data under Article 9 of the General Data Protection Regulation |
 | Features | Profile and onboarding, Journal, Find (scan and search, in service of the journal), Community feed (built last, behind a server-side switch) |
+| Product catalogue | Curated by the owner from independently compiled product information. No Open Beauty Facts data in release 1 (decision D5). |
+
+### 2.1 Beta stages
+
+| | Stage 0 — owner only | Stage 1 — closed beta |
+|---|---|---|
+| Who | Andrew Kofi Odoom, using his own real data. The invite list holds only his email address. | 20 to 50 invited adults |
+| Purpose | Use the app daily, find defects, and give the penetration tester a realistic system that holds no one else's data | Learn whether the app is useful and kept in use |
+| Entry gate | Milestones 0 to 5 complete with their council reviews; every control in section 5 except SEC-10; PRIV-02 and PRIV-04 | Every gate in sections 5, 6 and 7, including the penetration test (SEC-10) and the lawyer review (PRIV-06). Milestone 6 complete. |
+| Community feed | Switch off. Feed behaviour is tested in staging with test accounts and made-up test data only. | Switched on at week three of stage 1 (REQ-COM-07) |
+| Exit | Penetration test passed with critical and major findings fixed and retested, and the lawyer review complete | The criteria in section 10 |
+
+No other person's data, including friends' or family members', enters any environment before stage 1.
 
 ## 3. Requirements
 
@@ -39,7 +52,7 @@ The mobile system is new software. It is validated under its own plan (QA-05), n
 | Consent records | Server, append-only | Row-level security; no health data in the record itself |
 | Journal entries and edit history | Device only | Encrypted local database; excluded from operating-system cloud backups |
 | Shared community posts | Server | Row-level security; read through a view without the author identifier |
-| Product catalogue | Server (master), device (read-only versioned copy) | Public reference data; no user data |
+| Product catalogue | Server (master), device (read-only versioned copy) | Owner-curated reference data; no user data |
 | Unknown-product submissions | Server staging table | Row-level security; no photo; submitter identifier held separately with a retention limit |
 | Reminder settings | Device only | Local |
 
@@ -106,9 +119,9 @@ The mobile system is new software. It is validated under its own plan (QA-05), n
 | REQ-FIN-03 | A product page shows the full ingredient list (International Nomenclature of Cosmetic Ingredients names). Educational notes sit behind an information icon with the screen reader label "Show ingredient insight for [ingredient]", use "Ingredient insight" framing, show their source and evidence level, and contain no risk labels and no directive language. |
 | REQ-FIN-04 | Results are split into "Matches your profile" and "All products". Matching follows the written matching rule specification (`docs/specs/matching-rule.md`), which states each ingredient-to-concern link with its source and evidence level. Each matched product has a "Why is this here?" explanation ending "This is not a recommendation." Matching runs on the device (decision D3). |
 | REQ-FIN-05 | If a barcode is not found, the user can submit the barcode number and product name. No photo is collected. Submissions go to a server staging table and reach the master catalogue only through the scripted match-and-merge step in DECURA-MDM-SPEC-2026-001. |
-| REQ-FIN-06 | Catalogue data derived from Open Beauty Facts is held in separate tables from DeCura's own ingredient dictionary and concern mappings. The app shows Open Database Licence attribution, and the derived catalogue (or the script that rebuilds it) is published under the same licence (decision D5). The reuse terms of the EU cosmetic ingredient database are checked and recorded. |
+| REQ-FIN-06 | The catalogue is seeded from product information the owner has compiled independently. Every product record states its source (for example the brand's product page or the product packaging) and the date it was checked. Product information is not copied in bulk from another product database, and no brand images are used. Release 1 contains no Open Beauty Facts data (decision D5). The reuse terms of the EU cosmetic ingredient database, used to normalise ingredient names, are checked and recorded. |
 | REQ-FIN-07 | Each product carries a data quality score (0 to 100) computed once, in SQL on the server, under DECURA-DQF-2026-001. Products below the agreed threshold are labelled "Incomplete product data" and never appear in "Matches your profile". |
-| REQ-FIN-08 | The device holds a read-only, versioned catalogue file (barcode, name, brand, normalised ingredient identifiers, ingredient dictionary, quality score), updated by version deltas. Lookups never go to Open Beauty Facts directly. |
+| REQ-FIN-08 | The device holds a read-only, versioned catalogue file (barcode, name, brand, normalised ingredient identifiers, ingredient dictionary, quality score), updated by version deltas. Lookups never go to any external product database. |
 
 ### 3.6 Community feed
 
@@ -122,7 +135,7 @@ The mobile system is new software. It is validated under its own plan (QA-05), n
 | REQ-COM-05a | Every post is reviewed by the DeCura moderator (Kofi) before it appears. Reviews happen within 48 hours. Rejected posts get a short statement of reasons. |
 | REQ-COM-05b | Any user can report a published post. Reported posts are hidden until the moderator reviews them. Moderator access to posts is logged under REQ-AUD-01. |
 | REQ-COM-06 | Row-level security allows: authenticated users to insert their own consented posts; other users to read approved posts only, through a view without the author identifier; the author to delete their own posts. Nobody can update a post. |
-| REQ-COM-07 | The feed is controlled by a server-side switch, enforced in row-level security or server configuration, and turned on for everyone at a fixed point (week three of the beta). The empty state reads "Your community is just getting started. Share an entry to be one of the first." No made-up posts are ever added. |
+| REQ-COM-07 | The feed is controlled by a server-side switch, enforced in row-level security or server configuration, kept off in stage 0, and turned on for everyone at a fixed point (week three of stage 1). The empty state reads "Your community is just getting started. Share an entry to be one of the first." No made-up posts are ever added. |
 
 ### 3.7 Cross-cutting
 
@@ -136,7 +149,7 @@ The mobile system is new software. It is validated under its own plan (QA-05), n
 
 - Products have an internal surrogate key. Barcodes sit in a child table with a unique constraint, because one product can have several barcodes.
 - Ingredients are normalised to the EU cosmetic ingredient inventory, with aliases in a child table.
-- Every catalogue record carries its source, source version and import run identifier.
+- Every catalogue record carries its source, the date it was checked, and the import run identifier. The import reads from one owner-maintained source file under version control in the private store.
 - Separate schemas: `reference` (catalogue), `user` (row-level security), `community`, `staging`.
 - Concerns, skin types and tags are stored as stable codes, never as display labels, so wording changes need no migration.
 - No future research or aggregate table is built from the community table.
@@ -156,10 +169,11 @@ Negative tests confirm each of these is absent (QA-08).
 - Baby skin and hair module.
 - Web version.
 - Push notifications.
+- Open Beauty Facts data. It may return in a later release once cleaned, under its licence and a fresh council review (decision D5).
 
 ## 5. Minimum security standard
 
-All of these must be met before the first invited user is added.
+All of these must be met before stage 1, when the first invited user other than the owner is added. All except SEC-10 must be met before stage 0.
 
 | Identifier | Control |
 |---|---|
@@ -170,16 +184,18 @@ All of these must be met before the first invited user is added.
 | SEC-05 | Separate Supabase projects, app identifiers, build profiles and update channels for development, staging and production. Production access is limited to the owner with two-factor authentication, and access changes are logged. |
 | SEC-06 | No health data in logs, analytics, crash reports or reminder text. No crash reporting service in the beta. Beta measurements (section 10) use counts with no health content. |
 | SEC-07 | Dependency audit shows no unresolved critical or high vulnerabilities. |
-| SEC-08 | Daily encrypted backups of the production database, held in the European Union, kept for 30 days, with one documented successful restore test before beta. |
+| SEC-08 | Daily encrypted backups of the production database, held in the European Union, kept for 30 days, with one documented successful restore test before stage 0. |
 | SEC-09 | A self-assessment against the Open Worldwide Application Security Project Mobile Application Security Verification Standard, level 1, completed and filed. |
-| SEC-10 | An independent penetration test covering Supabase authentication, row-level security, storage, edge functions and the mobile app at Mobile Application Security Verification Standard level 1 is completed before the first real user is added. Critical and major findings are fixed and retested (decision D1). |
+| SEC-10 | An independent penetration test covering Supabase authentication, row-level security, storage, edge functions and the mobile app at Mobile Application Security Verification Standard level 1 is completed during stage 0, against the production system holding only the owner's data, and before stage 1. Critical and major findings are fixed and retested (decision D1). |
 | SEC-11 | Every edge function verifies the caller's token, validates input against a schema, restricts cross-origin requests, returns generic errors and reads keys only from Supabase secrets. |
-| SEC-12 | A written incident response runbook covers the 72-hour notification path under Articles 33 and 34 and key rotation steps, and is rehearsed once before beta. |
+| SEC-12 | A written incident response runbook covers the 72-hour notification path under Articles 33 and 34 and key rotation steps, and is rehearsed once before stage 0. |
 | SEC-13 | Rate limits apply to sign-in, reporting, sharing, search and submissions. |
 | SEC-14 | `main` is protected: pull requests and passing checks required, no force push, no direct uploads. |
 | SEC-15 | Over-the-air updates through Expo application services go through the same change control and council review as store builds. |
 
 ## 6. Privacy and regulatory gates
+
+All of these must be met before stage 1. PRIV-02 and PRIV-04 must also be met before stage 0.
 
 | Identifier | Gate |
 |---|---|
@@ -188,7 +204,7 @@ All of these must be met before the first invited user is added.
 | PRIV-03 | Privacy notice and beta participation notice written and reachable from inside the app and the store test listings. |
 | PRIV-04 | Every user-facing string checked against the house language rules and the medical device boundary (EU Medical Device Regulation 2017/745, German Health Care Advertising Act). |
 | PRIV-05 | Record of processing activities created for the beta. |
-| PRIV-06 | A qualified data protection lawyer reviews the re-assessed Data Protection Impact Assessment before the first real user is added. This is a hard gate. |
+| PRIV-06 | A qualified data protection lawyer reviews the re-assessed Data Protection Impact Assessment before stage 1. This is a hard gate. |
 | PRIV-07 | iOS privacy manifest and Google Play Data safety form completed and consistent with the privacy notice. |
 | PRIV-08 | A qualified human signs off all ingredient insight notes before testers see them. Notes resting on the 2016 textbook are checked against more recent evidence. |
 | PRIV-09 | Community moderation terms published in the app, with a contact point for reports (Digital Services Act Articles 11, 12, 14, 16 and 17). |
@@ -204,7 +220,7 @@ All of these must be met before the first invited user is added.
 | QA-05 | A new validation plan, DECURA-CSV-VAL-MOB-2026-001, with its own system classification (expected: Good Automated Manufacturing Practice 5 Category 5), risk assessment, installation, operational and performance qualification, traceability matrix and summary report. The 45 prototype test cases are re-mapped as inputs; none carry over as passed. |
 | QA-06 | Every milestone's definition of done includes a Web Content Accessibility Guidelines 2.2 level AA check: VoiceOver and TalkBack runs through every QA-03 flow, text at 200 percent, touch targets of at least 44 points, contrast of 4.5 to 1 for text and 3 to 1 for icons and controls, and no meaning carried by colour alone. |
 | QA-07 | Every council review recorded in `docs/reviews/`, with no open Block findings. |
-| QA-08 | Negative tests confirm every out-of-scope item in section 4 is absent, including no network calls to Anthropic or Open Beauty Facts endpoints. |
+| QA-08 | Negative tests confirm every out-of-scope item in section 4 is absent, including no network calls to Anthropic or any external product database, and no Open Beauty Facts data in the catalogue. |
 | QA-09 | The staging environment is documented as representative of production. Tests run on a device matrix of at least two iOS and two Android devices covering the oldest and newest supported operating system versions. |
 | QA-10 | Test evidence is retained with the release. |
 | QA-11 | Every build is labelled with a version and commit, and the release configuration is recorded. |
@@ -215,12 +231,13 @@ Each milestone ends with a council review and meets its acceptance criteria (the
 
 | Milestone | Content | Delivers | Reviewers besides quality assurance |
 |---|---|---|---|
-| 0. Foundations | Expo project, TypeScript, typed data layer and lint rule, continuous integration with tests and secret scanning, three Supabase environments, sign-in, encrypted local database, scripted catalogue import, catalogue size measurement, barcode scanning trial on physical devices | REQ-ACC-01a to 02b, REQ-ARC-01, SEC-01 to 07, SEC-14 | All five |
+| 0. Foundations | Expo project, TypeScript, typed data layer and lint rule, continuous integration with tests and secret scanning, three Supabase environments, sign-in, encrypted local database, scripted import of the owner-curated catalogue with source and date checks, barcode scanning trial on physical devices | REQ-ACC-01a to 02b, REQ-ARC-01, SEC-01 to 07, SEC-14 | All five |
 | 1. Profile and onboarding | Consent capture and records, audit trail, onboarding flow, profile editing, age confirmation | REQ-CON-01 to 08, REQ-PRO-01 to 06, REQ-ACC-06, REQ-AUD-01 | Mobile engineering, privacy and regulatory, product design and science, data engineering |
 | 2. Journal | On-device catalogue delivery, entry logging, calendar, product picker and free-text matching, version history, reminder, export, sign-out and deletion | REQ-JOU-01 to 07, REQ-FIN-08, REQ-ACC-03a to 05, REQ-OFF-01 | Mobile engineering, data engineering, privacy and regulatory, security and development operations |
 | 3. Find | Scanning, search, product page and ingredient notes, matching rule, quality score threshold, unknown product submission | REQ-FIN-01a to 07 | Data engineering, mobile engineering, product design and science, privacy and regulatory |
 | 4. Community feed | Sharing with preview, display identity, moderation, reporting, row-level security tests, server-side switch | REQ-COM-01 to 07, PRIV-09 | Security and development operations, privacy and regulatory, product design and science, mobile engineering, data engineering |
-| 5. Beta readiness | Security self-assessment, penetration test, incident runbook, Data Protection Impact Assessment re-assessment and lawyer review, backups and restore test, privacy manifest and Data safety form, store test builds, validation summary | SEC-08 to 13, 15, PRIV-01 to 08, QA-04, 05, 07, 09 to 11 | All five |
+| 5. Stage 0 readiness | Security self-assessment, incident runbook, backups and restore test, rate limits, edge function hardening, data processing agreements, copy review, internal builds on the owner's devices | SEC-08, 09, 11 to 13, 15, PRIV-02, PRIV-04 | All five |
+| 6. Stage 1 readiness | Penetration test with fixes and retest, Data Protection Impact Assessment re-assessment and lawyer review, privacy and beta notices, record of processing, privacy manifest and Data safety form, ingredient note sign-off, external test builds, validation summary | SEC-10, PRIV-01, PRIV-03, PRIV-05 to 08, QA-04, 05, 07, 09 to 11 | All five |
 
 ## 9. Defect severity
 
@@ -230,13 +247,13 @@ Each milestone ends with a council review and meets its acceptance criteria (the
 | Major | A requirement not met with no workaround, or wrong information shown | Barcode lookup returns the wrong product; deletion leaves server data behind |
 | Minor | A requirement met with a workaround, or a cosmetic or wording issue | Misaligned layout; unclear but accurate label |
 
-## 10. Beta exit criteria
+## 10. Beta exit criteria (stage 1)
 
-The beta is complete when all of these hold:
+Stage 1 is complete when all of these hold:
 
 - At least 20 people have logged entries on five or more different days over at least 14 days.
 - The week-two return rate and the median first-value time (REQ-PRO-04) are measured and recorded.
-- The share of logged products entered as free text is measured, to show catalogue coverage.
+- The share of logged products entered as free text, and the share of barcode scans that find no match, are measured to show how well the owner-curated catalogue covers what testers use.
 - At least a third of testers have darker skin tones or scalp concerns, as self-reported in onboarding (counted without exporting health data).
 - No critical defects are open; no critical defect stayed open longer than seven days; no major defect is open without a documented justification; no data integrity defect is open.
 - 100 percent of traceability matrix lines have been executed.
@@ -256,6 +273,7 @@ DECURA-CSV-VAD-2026-001 is annotated as covering the prototype only.
 |---|---|---|---|
 | 0.1 | 27 October 2026 | First draft | Andrew Kofi Odoom, with Claude |
 | 0.2 | 27 October 2026 | Revised after council review 2026-10-27 | Andrew Kofi Odoom, with Claude |
+| 0.3 | 27 October 2026 | Owner decisions D1 to D6 applied: two-stage beta, owner-curated catalogue without Open Beauty Facts | Andrew Kofi Odoom, with Claude |
 
 **Approval at version 1.0**
 
@@ -266,15 +284,15 @@ DECURA-CSV-VAD-2026-001 is annotated as covering the prototype only.
 
 After version 1.0, changes go through change control. A change is **minor** if it clarifies wording without changing behaviour (version 1.x) and **major** if it adds, removes or changes a requirement (version 2.0 and council review).
 
-## 13. Open decisions
+## 13. Decisions
 
-Draft 0.2 applies the default in each row. Confirm or change each before version 1.0.
+Confirmed by Andrew Kofi Odoom on 27 October 2026.
 
-| Number | Decision | Default applied |
+| Number | Decision | Outcome |
 |---|---|---|
-| D1 | Penetration test before the first invited user, or a two-stage beta | Penetration test before the first real user (SEC-10). Alternative: a stage-0 beta with only the owner's own data until the test is done. |
+| D1 | Penetration test before the first invited user, or a two-stage beta | Two-stage beta. Stage 0 uses only the owner's own data until the penetration test and lawyer review are complete (section 2.1, SEC-10, PRIV-06). |
 | D2 | Accept that a lost phone, reinstall or sign-out loses the journal in release 1 | Accepted, with warnings and export (REQ-ACC-03a, REQ-JOU-06). Encrypted cloud backup considered for release 2. |
 | D3 | Keep "Matches your profile" in release 1 or defer it | Kept, rule-based (REQ-FIN-04). Cut from release 1 if the matching rule specification is not ready when milestone 3 starts. |
 | D4 | Session inactivity limit | 30 days plus an optional in-app lock (REQ-ACC-02b). |
-| D5 | Accept Open Database Licence share-alike for the derived catalogue | Accepted; DeCura's own dictionary and mappings kept separate (REQ-FIN-06). |
+| D5 | Open Database Licence share-alike for a catalogue derived from Open Beauty Facts | Superseded. Open Beauty Facts data is removed from release 1 because it needs cleaning. The catalogue is seeded from product information the owner has compiled independently, with a recorded source for every product (REQ-FIN-06). |
 | D6 | Where governance documents live | Private store; index only in the repository (section 11). |

@@ -117,3 +117,16 @@
 ## 6. Re-review
 
 Draft 0.2 goes back to quality assurance and validation and to security and development operations, to confirm their Blocks are resolved, once Kofi has answered D1 to D6.
+
+## 7. Owner decisions (27 October 2026)
+
+| Number | Outcome |
+|---|---|
+| D1 | Two-stage beta. Stage 0: the owner only, with his own data, until the penetration test and lawyer review are complete. Stage 1: the closed beta. |
+| D2 | Default accepted: journal loss accepted in release 1 with warnings and export. |
+| D3 | Default accepted: "Matches your profile" kept, rule-based. |
+| D4 | Default accepted: 30-day session inactivity limit with optional in-app lock. |
+| D5 | Open Beauty Facts data removed from release 1 because it needs cleaning. The catalogue is seeded from product information the owner has compiled independently, with a recorded source for each product. This supersedes the share-alike question. |
+| D6 | Default accepted: governance documents private; index only in the repository. |
+
+Applied in draft 0.3. Because D1 and D5 change the security gates and the catalogue source, data engineering joins the re-review alongside quality assurance and validation and security and development operations.
