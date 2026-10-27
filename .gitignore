@@ -1,0 +1,21 @@
+# Secrets and environment
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.key
+*.mobileprovision
+google-services.json
+GoogleService-Info.plist
+
+# Dependencies and builds
+node_modules/
+.expo/
+dist/
+web-build/
+ios/build/
+android/build/
+
+# System
+.DS_Store
