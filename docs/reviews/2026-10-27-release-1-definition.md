@@ -167,3 +167,7 @@ Applied in draft 0.3. Because D1 and D5 change the security gates and the catalo
 - Evidence that branch protection and push-protected secret scanning are on (SEC-01, SEC-14), before milestone 0 closes.
 - Specifications to write: `docs/specs/matching-rule.md`, `docs/specs/rate-limits.md`, `docs/specs/design-system.md`; traceability matrix `docs/validation/traceability-matrix.csv`.
 - Private governance updates: DECURA-DQF-2026-001 (mobile section, display threshold, criteria without Open Beauty Facts fields), DECURA-MDM-SPEC-2026-001 (seed template, source types, submission path, brand concentration rule), DECURA-DPIA-2026-001 (Transport Layer Security wording, tester access), DECURA-CSV-VAD-2026-001 (prototype-only note).
+
+## 9. Closure
+
+Decision D7 (catalogue of at least 300 products from at least 30 brands before stage 1) accepted by the owner on 27 October 2026. DECURA-REL1-2026-001 issued as version 1.0, the requirements baseline, approved by the owner's merge of pull request 2. Further changes follow change control (section 12 of the definition).

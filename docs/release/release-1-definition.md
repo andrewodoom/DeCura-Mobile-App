@@ -3,10 +3,10 @@
 | | |
 |---|---|
 | Document | DECURA-REL1-2026-001 |
-| Version | 0.4 (draft, re-review conditions applied) |
+| Version | 1.0 (requirements baseline) |
 | Owner and author | Andrew Kofi Odoom |
 | Date | 27 October 2026 |
-| Status | Draft. Decisions D1 to D6 confirmed by the owner on 27 October 2026 (section 13). Both Blocks cleared at re-review on 27 October 2026 (approve with conditions; conditions applied in this draft). Becomes the requirements baseline at version 1.0 when the owner confirms decision D7 and approves. |
+| Status | Approved. All decisions D1 to D7 confirmed by the owner on 27 October 2026. Both council Blocks cleared at re-review. Approval takes effect when the owner merges pull request 2 (section 12). |
 | Review record | `docs/reviews/2026-10-27-release-1-definition.md` |
 
 ## 1. Purpose
@@ -304,19 +304,20 @@ DECURA-CSV-VAD-2026-001 is annotated as covering the prototype only.
 | 0.2 | 27 October 2026 | Revised after council review 2026-10-27 | Andrew Kofi Odoom, with Claude |
 | 0.3 | 27 October 2026 | Owner decisions D1 to D6 applied: two-stage beta, owner-curated catalogue without Open Beauty Facts | Andrew Kofi Odoom, with Claude |
 | 0.4 | 27 October 2026 | Re-review conditions from quality assurance, security and data engineering applied | Andrew Kofi Odoom, with Claude |
+| 1.0 | 27 October 2026 | Decision D7 confirmed; issued as the requirements baseline | Andrew Kofi Odoom, with Claude |
 
 **Approval at version 1.0**
 
 | Role | Name | Date | Signature |
 |---|---|---|---|
-| Owner and approver | Andrew Kofi Odoom | | |
+| Owner and approver | Andrew Kofi Odoom | Date of merge, recorded by GitHub | Merge of pull request 2 by the owner's GitHub account (andrewodoom). The merge record, with its timestamp and account, is the electronic approval record. |
 | Quality review record | `docs/reviews/2026-10-27-release-1-definition.md`. There is no independent human quality approver; this is a known limitation, to be closed before public release. | | |
 
 After version 1.0, changes go through change control. A change is **minor** if it clarifies wording without changing behaviour (version 1.x) and **major** if it adds, removes or changes a requirement (version 2.0 and council review).
 
 ## 13. Decisions
 
-D1 to D6 confirmed by Andrew Kofi Odoom on 27 October 2026. D7 raised at re-review.
+All decisions confirmed by Andrew Kofi Odoom on 27 October 2026 (D1 to D6 after the first review, D7 after the re-review).
 
 | Number | Decision | Outcome |
 |---|---|---|
@@ -326,4 +327,4 @@ D1 to D6 confirmed by Andrew Kofi Odoom on 27 October 2026. D7 raised at re-revi
 | D4 | Session inactivity limit | 30 days plus an optional in-app lock (REQ-ACC-02b). |
 | D5 | Open Database Licence share-alike for a catalogue derived from Open Beauty Facts | Superseded. Open Beauty Facts data is removed from release 1 because it needs cleaning. The catalogue is seeded from product information the owner has compiled independently, with a primary source recorded for every product (REQ-FIN-06a to 06e). |
 | D6 | Where governance documents live | Private store; index only in the repository (section 11). |
-| D7 | Catalogue size before stage 1 | **Awaiting owner.** Proposed by data engineering: at least 300 products from at least 30 brands, no brand above 15 percent, at least 10 products per concern (REQ-FIN-10). |
+| D7 | Catalogue size before stage 1 | Accepted as proposed by data engineering: at least 300 products from at least 30 brands, no brand above 15 percent, at least 10 products per concern (REQ-FIN-10). |
