@@ -37,6 +37,26 @@ Test type says how a test is run; the qualification stage says when it counts as
 
 ## Checking the matrix
 
-`scripts/check-traceability.sh` fails if any identifier in DECURA-REL1-2026-001 is missing from the matrix, the matrix names an identifier the definition does not, or a row breaks the column rules above. It is not yet run in continuous integration. Once a CI step runs it, that step's result will be the evidence for `QA-01-T01`.
+`scripts/check-traceability.sh` fails if any identifier in DECURA-REL1-2026-001 is missing from the matrix, the matrix names an identifier the definition does not, or a row breaks the column rules above. It runs in continuous integration (the "Traceability matrix" step of `.github/workflows/ci.yml`) and is the evidence for `QA-01-T01`.
 
 The matrix is a living record. Planned test types can change when the test is written; record the change in the pull request that makes it.
+
+## Skipped tests (QA-04)
+
+`scripts/check-skipped-tests.sh` reads the Jest report in continuous integration. It fails on:
+- any test that did not run (`it.skip`, `it.todo` and similar), unless `skipped-tests.json` lists its full name with a justification;
+- an entry for a test that now runs or no longer exists;
+- a report with no tests.
+
+Each entry is `{"test": "<full test name>", "justification": "<why, and when it will run>"}`, added in the pull request that skips the test and reviewed by quality assurance.
+
+## Continuous integration evidence (QA-04, QA-10)
+
+Each run uploads two artifacts, kept by GitHub for 90 days:
+- `app-check-reports-<commit>`: `npm-audit.json` and `jest.json`;
+- `secret-scan-report-<commit>`: the redacted gitleaks report.
+
+GitHub's 90 days are not the retention period for validation evidence. When a run is cited as evidence (an installation or operational qualification record, a matrix result, or a release candidate), the owner copies it to the private validation store within 30 days of the run:
+1. Download the run's artifacts from the run page.
+2. Record the run identifier, run link, commit, date of download and the SHA-256 checksum of each downloaded file (`shasum -a 256 <file>`).
+3. Store the files and that record together under the qualification record that cites them.

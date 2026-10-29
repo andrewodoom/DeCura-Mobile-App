@@ -32,3 +32,20 @@ supabase/.temp/
 *.db
 *.sqlite
 *.sqlite3
+
+# Expo and Metro
+expo-env.d.ts
+.metro-health-check*
+*.tsbuildinfo
+*.orig.*
+.kotlin/
+
+# Native folders are generated from app.json (continuous native generation)
+/ios
+/android
+
+# Debug logs
+npm-debug.*
+
+# Test and audit reports written by CI
+reports/
