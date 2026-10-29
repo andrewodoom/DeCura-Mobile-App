@@ -8,7 +8,7 @@
 | Reviewers | Quality assurance and validation; security and development operations, run independently and in parallel |
 | Requested by | Andrew Kofi Odoom |
 | Change classification | Minor: new supporting infrastructure, no change to system behaviour. In scope of the milestone 0 installation qualification under DECURA-CSV-VAL-MOB-2026-001. |
-| Outcome | **Approve with conditions** from both advisers. C1, C2, C3, C5, C11 and C13 applied in this change (section 9); C4 and C6 closed after merge (section 10), with deviation DEV-M0-02 for the merge before C4. C7, C9 and C14 were closed on owner statements, then reopened when the screenshots were reviewed (section 10). The rest are open. |
+| Outcome | **Approve with conditions** from both advisers. C1, C2, C3, C5, C11 and C13 applied in this change (section 9); C4 and C6 closed after merge (section 10), with deviation DEV-M0-02 for the merge before C4. C7, C9 and C14 were closed on owner statements, reopened when the screenshots were reviewed, and closed again on screenshot evidence (section 10). The rest are open. |
 
 ## 1. Verdicts
 
@@ -126,9 +126,9 @@ Both merges came before the required checks were added, so neither needed a bypa
 | C4 | **Closed after merge** (see DEV-M0-02). Run 40682457576 concluded success at 2026-10-28 11:45:55, before the merge. "Secret scan (full history)" passed; "Audit, type check, lint and test" passed with the DEV-M0-01 skip. Confirmed from the GitHub API by the primary agent on 29 October 2026, after the merge. |
 | Concurrency on `main` | Runs 40900389285 and 40900505549 did not overlap: the first finished before the second started. Neither was cancelled, but the per-commit groups were not exercised. |
 | C6 | **Closed.** Required checks observed by the primary agent through `GET /repos/andrewodoom/DeCura-Mobile-App/rules/branches/main`, 29 October 2026. They are "Secret scan (full history)" and "Audit, type check, lint and test" from GitHub Actions (integration 15368), with branches up to date before merging. The API response, with its retrieval time, was saved by the primary agent for the owner to file in the private validation store. Bypass list: owner statement (Andrew Kofi Odoom, 29 October 2026), not independently inspected; screenshot under C9. |
-| C7 | **Reopened 29 October 2026.** Push protection on, owner statement (Andrew Kofi Odoom, 29 October 2026). No push protection screenshot was among those filed (see C9 correction). Closes when the screenshot is filed. |
-| C9 | **Reopened 29 October 2026.** Five screenshots taken at 16:37 and filed in the private validation store, reviewed by the primary agent. They show the ruleset (active, bypass list empty, required status checks, blocked force pushes and deletions) and the Actions settings. They do not include push protection. |
-| C14 | **Reopened 29 October 2026.** The Actions settings screenshot (16:37) shows "Require approval for first-time contributors", not "Require approval for all external contributors" as stated. Closes when the setting is changed and a new screenshot is filed. |
+| C7 | **Closed 29 October 2026.** Screenshot at 18:36 shows Secret Protection enabled and Push protection on. Reopened earlier the same day because no screenshot had been filed. |
+| C9 | **Closed 29 October 2026.** Screenshots filed in the private validation store, each reviewed by the primary agent and listed in the folder's index:<br>- 16:37: the ruleset (active, bypass list empty, required status checks, blocked force pushes and deletions) and the Actions settings;<br>- 18:36: push protection;<br>- 19:09: fork approval.<br>Reopened earlier the same day because push protection was missing and the fork approval screenshot contradicted the record. |
+| C14 | **Closed 29 October 2026.** Screenshot at 19:09 shows "Require approval for all external contributors". Reopened earlier the same day: screenshots at 16:37 and 18:35 showed "Require approval for first-time contributors", because the change had not been saved. |
 | Concurrency change | Re-reviewed by quality assurance on 29 October 2026 and accepted, with the section 9 correction. Accepted by the owner (Andrew Kofi Odoom), 29 October 2026. Security and development operations content with the owner's acceptance, no re-review needed (29 October 2026). |
 
 ### Traceability matrix: unchanged
