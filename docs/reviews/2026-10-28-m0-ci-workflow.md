@@ -8,7 +8,7 @@
 | Reviewers | Quality assurance and validation; security and development operations, run independently and in parallel |
 | Requested by | Andrew Kofi Odoom |
 | Change classification | Minor: new supporting infrastructure, no change to system behaviour. In scope of the milestone 0 installation qualification under DECURA-CSV-VAL-MOB-2026-001. |
-| Outcome | **Approve with conditions** from both advisers. C1, C2, C3, C5, C11 and C13 applied in this change (section 9); the rest are open. |
+| Outcome | **Approve with conditions** from both advisers. C1, C2, C3, C5, C11 and C13 applied in this change (section 9); C4, C6, C7, C9 and C14 closed after merge (section 10), with deviation DEV-M0-02 for the merge before C4; the rest are open. |
 
 ## 1. Verdicts
 
@@ -98,4 +98,79 @@ Still open before merge: **C4** (record a green run of this pull request with it
 
 ### Owner change after review
 
-At the owner's request, the concurrency group is now `ci-${{ github.ref }}-${{ github.event_name == 'push' && github.sha || 'pr' }}`. Each push to `main` gets its own group, so a run on `main` can be neither cancelled nor replaced while it waits in the queue. This goes further than the reviewed fix in section 2. Pull request runs still cancel older runs on the same pull request. Scheduled and manual runs share the group of their ref, are never cancelled, and at most one waits at a time. This change has not been re-reviewed by either adviser.
+At the owner's request, the concurrency group is now `ci-${{ github.ref }}-${{ github.event_name == 'push' && github.sha || 'pr' }}`. Each push to `main` gets its own group, so a run on `main` can be neither cancelled nor replaced while it waits in the queue. This goes further than the reviewed fix in section 2. Pull request runs still cancel older runs on the same pull request. Scheduled and manual runs share the group of their ref. A running scheduled or manual run is never cancelled; a waiting one is replaced by a newer run in the same group. (Corrected 29 October 2026 after quality assurance re-review; the earlier text said these runs are never cancelled.)
+
+## 10. After merge (29 October 2026)
+
+All times UTC. Run and ruleset data retrieved by the primary agent from the public GitHub API on 29 October 2026, after both merges.
+
+| Event | Time |
+|---|---|
+| Run 40682457576 (`pull_request`, `da02bec`) completed, both jobs success | 2026-10-28 11:45:55 |
+| Pull request 5 merged as `aacd548` | 2026-10-29 15:19:27 |
+| Run 40900389285 (`push`, `aacd548`) ran, both jobs success | 15:19:31 to 15:19:39 |
+| Pull request 4 merged as `25c52d9` | 15:20:09 |
+| Run 40900505549 (`push`, `25c52d9`) ran, both jobs success | 15:20:12 to 15:20:22 |
+| Ruleset "Protect main" last updated (required checks added, C6) | 15:34:46 |
+
+Run links:
+- https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/40682457576
+- https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/40900389285
+- https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/40900505549
+
+Both merges came before the required checks were added, so neither needed a bypass. The trees of `da02bec` and `aacd548` are identical, so run 40682457576 tested exactly what merged.
+
+| Item | Outcome |
+|---|---|
+| C4 | **Closed after merge** (see DEV-M0-02). Run 40682457576 concluded success at 2026-10-28 11:45:55, before the merge. "Secret scan (full history)" passed; "Audit, type check, lint and test" passed with the DEV-M0-01 skip. Confirmed from the GitHub API by the primary agent on 29 October 2026, after the merge. |
+| Concurrency on `main` | Runs 40900389285 and 40900505549 did not overlap: the first finished before the second started. Neither was cancelled, but the per-commit groups were not exercised. |
+| C6 | **Closed.** Required checks observed by the primary agent through `GET /repos/andrewodoom/DeCura-Mobile-App/rules/branches/main`, 29 October 2026. They are "Secret scan (full history)" and "Audit, type check, lint and test" from GitHub Actions (integration 15368), with branches up to date before merging. The API response, with its retrieval time, was saved by the primary agent for the owner to file in the private validation store. Bypass list: owner statement (Andrew Kofi Odoom, 29 October 2026), not independently inspected; screenshot under C9. |
+| C7 | **Closed.** Push protection on, owner statement (Andrew Kofi Odoom, 29 October 2026); screenshot under C9. |
+| C9 | **Closed.** Owner states the screenshots of the ruleset, push protection and fork approval settings are in the private validation store (29 October 2026). |
+| C14 | **Closed.** Fork pull request workflows need approval for all external contributors, owner statement (Andrew Kofi Odoom, 29 October 2026); screenshot under C9. |
+| Concurrency change | Re-reviewed by quality assurance on 29 October 2026 and accepted, with the section 9 correction. Accepted by the owner (Andrew Kofi Odoom), 29 October 2026. Security and development operations content with the owner's acceptance, no re-review needed (29 October 2026). |
+
+### Traceability matrix: unchanged
+
+`SEC-01-T01`, `SEC-07-T01`, `SEC-14-T01` and `QA-04-T01` stay `Not run` with no evidence link.
+- **SEC-01-T01:** the scanner has not been tested against a planted secret (C8), so a clean result can't be told apart from a broken check. It becomes Pass once C8 passes and is observed.
+- **SEC-07-T01 and QA-04-T01:** under DEV-M0-01 the audit and tests did not run. They change when the Expo project change closes DEV-M0-01.
+- **SEC-14-T01:** waiting until the evidence in the private store is cited from a pass entry.
+
+### Open items
+
+- **QA-01-T01 evidence:** `docs/validation/README.md` said `scripts/check-traceability.sh` runs in continuous integration. It does not; `ci.yml` never calls it. The README now says it will, and a CI step needs its own change and review.
+- **Authenticated bypass-list evidence** (security condition S1 below), needed before `SEC-14-T01` can be marked Pass.
+- C8, C10, C12 and C15 remain open (section 5). DEV-M0-01 remains open (section 6).
+- The first pull request to run under C6 is this records change; its run ID goes into the milestone 0 installation qualification record.
+
+A run that passes is not yet SEC-07 or QA-04 evidence while DEV-M0-01 is open (section 6).
+
+### Deviation DEV-M0-02: pull request 5 merged with a before-merge condition open
+
+- **What happened:** Pull request 5 merged as `aacd548` at 2026-10-29 15:19:27 while C4 (section 4) was still open. `main` had no required status checks yet, so nothing blocked the merge. (C6 was a condition before milestone 0 closes, not before merge, so merging before C6 is not part of this deviation.)
+- **Impact:** None on the merged content. Run 40682457576 on `da02bec` concluded success at 2026-10-28 11:45:55, before the merge, and `da02bec` and `aacd548` have identical trees. Push run 40900389285 on `aacd548` passed. No change to system behaviour. DEV-M0-01 still applies.
+- **Root cause:** Before-merge conditions were tracked only in the review record. Nothing in GitHub enforced them.
+- **Correction:** C4 closed after merge (above).
+- **Prevention:** C6 now enforces both CI checks. For conditions CI cannot check, the pull request description lists each before-merge condition and the record section that closes it, before the owner is asked to merge.
+- **Status:** Closed on the owner's merge of this records change.
+- Add to the milestone 0 installation qualification record, alongside DEV-M0-01 (section 8).
+
+### Quality assurance re-review (29 October 2026)
+
+Approve with conditions. The conditions were: record DEV-M0-02; reword who observed the run and when; correct the concurrency claim; attribute the bypass-list statement; correct the scheduled-run wording in section 9; state the matrix is unchanged; and list the README claim as open. All are applied above.
+
+### Security and development operations confirmation (29 October 2026)
+
+Approve with conditions. Security re-queried the public API independently and got the same result as the saved response. Both required check names match the job `name:` values in `ci.yml` exactly.
+- **C6:** closed and independently verified.
+- **C7 and C14:** closed. Both are owner-attested with screenshots on file, not verified by security. The independent penetration test should check both settings.
+- **Concurrency change:** no re-review needed.
+
+| Number | Condition | Owner |
+|---|---|---|
+| S1 | Save an authenticated `GET /repos/andrewodoom/DeCura-Mobile-App/rulesets/25983499` response showing `"bypass_actors": []`, with its retrieval time, in the private validation store beside the screenshot. Cite it from the `SEC-14-T01` pass entry. Re-capture it whenever the ruleset's `updated_at` changes. | Kofi |
+| S2 | Change-control rule for any new or changed workflow: no other workflow may use the job names "Secret scan (full history)" or "Audit, type check, lint and test". A required check is tied to GitHub Actions (integration 15368), not to `ci.yml`, so a reused name could satisfy it without `ci.yml` running. | Every reviewer of a workflow change |
+| S3 | Change-control rule for any new workflow: its concurrency group must not start with `ci-`, or `github.workflow` goes back into the `ci.yml` group. Otherwise the two workflows could cancel each other's pull request runs. | Every reviewer of a workflow change |
+
+S2 and S3 go on the quality assurance change-control checklist for workflow changes.
