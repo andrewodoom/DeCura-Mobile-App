@@ -128,7 +128,7 @@ Both merges came before the required checks were added, so neither needed a bypa
 | C7 | **Closed.** Push protection on, owner statement (Andrew Kofi Odoom, 29 October 2026); screenshot under C9. |
 | C9 | **Closed.** Owner states the screenshots of the ruleset, push protection and fork approval settings are in the private validation store (29 October 2026). |
 | C14 | **Closed.** Fork pull request workflows need approval for all external contributors, owner statement (Andrew Kofi Odoom, 29 October 2026); screenshot under C9. |
-| Concurrency change | Re-reviewed by quality assurance on 29 October 2026 and accepted, with the section 9 correction. Not re-reviewed by security; accepted by the owner (Andrew Kofi Odoom), 29 October 2026. |
+| Concurrency change | Re-reviewed by quality assurance on 29 October 2026 and accepted, with the section 9 correction. Accepted by the owner (Andrew Kofi Odoom), 29 October 2026. Security and development operations content with the owner's acceptance, no re-review needed (29 October 2026). |
 
 ### Traceability matrix: unchanged
 
@@ -140,7 +140,7 @@ Both merges came before the required checks were added, so neither needed a bypa
 ### Open items
 
 - **QA-01-T01 evidence:** `docs/validation/README.md` said `scripts/check-traceability.sh` runs in continuous integration. It does not; `ci.yml` never calls it. The README now says it will, and a CI step needs its own change and review.
-- **C6 confirmation by security and development operations** (quality assurance hand-off).
+- **Authenticated bypass-list evidence** (security condition S1 below), needed before `SEC-14-T01` can be marked Pass.
 - C8, C10, C12 and C15 remain open (section 5). DEV-M0-01 remains open (section 6).
 - The first pull request to run under C6 is this records change; its run ID goes into the milestone 0 installation qualification record.
 
@@ -159,3 +159,18 @@ A run that passes is not yet SEC-07 or QA-04 evidence while DEV-M0-01 is open (s
 ### Quality assurance re-review (29 October 2026)
 
 Approve with conditions. The conditions were: record DEV-M0-02; reword who observed the run and when; correct the concurrency claim; attribute the bypass-list statement; correct the scheduled-run wording in section 9; state the matrix is unchanged; and list the README claim as open. All are applied above.
+
+### Security and development operations confirmation (29 October 2026)
+
+Approve with conditions. Security re-queried the public API independently and got the same result as the saved response. Both required check names match the job `name:` values in `ci.yml` exactly.
+- **C6:** closed and independently verified.
+- **C7 and C14:** closed. Both are owner-attested with screenshots on file, not verified by security. The independent penetration test should check both settings.
+- **Concurrency change:** no re-review needed.
+
+| Number | Condition | Owner |
+|---|---|---|
+| S1 | Save an authenticated `GET /repos/andrewodoom/DeCura-Mobile-App/rulesets/25983499` response showing `"bypass_actors": []`, with its retrieval time, in the private validation store beside the screenshot. Cite it from the `SEC-14-T01` pass entry. Re-capture it whenever the ruleset's `updated_at` changes. | Kofi |
+| S2 | Change-control rule for any new or changed workflow: no other workflow may use the job names "Secret scan (full history)" or "Audit, type check, lint and test". A required check is tied to GitHub Actions (integration 15368), not to `ci.yml`, so a reused name could satisfy it without `ci.yml` running. | Every reviewer of a workflow change |
+| S3 | Change-control rule for any new workflow: its concurrency group must not start with `ci-`, or `github.workflow` goes back into the `ci.yml` group. Otherwise the two workflows could cancel each other's pull request runs. | Every reviewer of a workflow change |
+
+S2 and S3 go on the quality assurance change-control checklist for workflow changes.
