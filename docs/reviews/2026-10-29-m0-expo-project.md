@@ -8,7 +8,7 @@
 | Reviewers | Quality assurance and validation; mobile engineering; security and development operations, run independently and in parallel |
 | Requested by | Andrew Kofi Odoom |
 | Change classification | Major: new codebase baseline. No app logic, data handling or user-facing feature. |
-| Outcome | **Approve with conditions** from all three advisers. Conditions applied (section 3) or deferred with reasons (section 4). DEV-M0-01 closes once a CI run of this change is observed (section 5). |
+| Outcome | **Approve with conditions** from all three advisers. Conditions applied (section 3) or deferred with reasons (section 4). DEV-M0-01 closed after merge on the observed run (section 5). |
 
 ## 1. Verdicts
 
@@ -73,8 +73,12 @@ The skip step and every condition that read it are removed (`ci.yml`, job "Audit
 
 | Item | Value |
 |---|---|
-| Run | To record |
-| Commit | To record |
+| Run | 40915437424 (`pull_request`, pull request 7): https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/40915437424 |
+| Commit | `0b4fafa` (pull request head). GitHub tested the temporary merge commit `e6d40ad`, which names the artifacts. |
+| Result | Both jobs success. Every app-checks step concluded success and none was skipped: Set up Node.js, Install exact locked dependencies, Traceability matrix, Dependency audit, Expo dependency versions, Type check, Lint, Test, Skipped tests, Upload reports. |
+| After merge | Run 40915624905 (`push`, `8f21ad4`) success, 2026-10-29 16:52 UTC |
+| Observed | Primary agent, from the public GitHub API, 29 October 2026 |
+| Status | **DEV-M0-01 closed**, 29 October 2026 |
 
 ## 6. Challenge tests (29 October 2026)
 
@@ -100,6 +104,21 @@ No result changes in this change, because no CI run has been observed. After a g
 - `SEC-07-T01` can move to Pass, linked to the run and this record, noting that the result relies on the zod waiver. Security to confirm.
 - `QA-04-T01`, `QA-10-T01` and `QA-11-T01` stay Not run until the release candidate.
 - `QA-04-T02` (new) can move to Pass, linked to the run's "Test" step.
+
+### After merge (29 October 2026)
+
+- **QA-01-T01:** Pass, linked to run 40915437424.
+- **QA-04-T02:** Pass, linked to run 40915437424.
+- **SEC-07-T01:** stays Not run until security confirms that a pass relying on the zod waiver is acceptable.
+
+Run artifacts, kept by GitHub until 27 January 2027, are to be copied to the private validation store under the procedure in `docs/validation/README.md`:
+
+| Artifact | Size | GitHub digest |
+|---|---|---|
+| `app-check-reports-e6d40add0cec84306eb8e01b5a00aa12dd79cb43` | 1,985 bytes | `sha256:0195067f2df88c97dda89ea0d3f35d93a64d6c45f78c24a29b9b4398f6f0e79d` |
+| `secret-scan-report-e6d40add0cec84306eb8e01b5a00aa12dd79cb43` | 145 bytes | `sha256:cb63f1b1b4160af0440349f29c63d8377d520c5ff9681c851a07f5653c0f8cba` |
+
+Open item: on pull requests, artifact names carry the temporary merge commit rather than the pull request head. Name them with `github.event.pull_request.head.sha || github.sha` in the next workflow change.
 
 ## 8. Governance updates
 

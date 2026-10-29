@@ -64,6 +64,7 @@ The `app-checks` job skips audit, type check, lint and test while there is no `p
 - **Exit condition:** the Expo project change (milestone 0, part 1, item 3) deletes the "Look for the app project" step and every `if:` that reads it.
 - **Tracked in:** this record and the milestone 0 installation qualification record as an open known issue.
 - **Milestone 0 cannot close while it is open.**
+- **Closed 29 October 2026** by the Expo project change, on run 40915437424. See `2026-10-29-m0-expo-project.md` section 5.
 
 Conditions carried to the Expo project change, checked in its review:
 - Removal of the skip step and its conditions (quality assurance).
