@@ -37,6 +37,6 @@ Test type says how a test is run; the qualification stage says when it counts as
 
 ## Checking the matrix
 
-`scripts/check-traceability.sh` fails if any identifier in DECURA-REL1-2026-001 is missing from the matrix, the matrix names an identifier the definition does not, or a row breaks the column rules above. It runs in continuous integration and is the evidence for `QA-01-T01`.
+`scripts/check-traceability.sh` fails if any identifier in DECURA-REL1-2026-001 is missing from the matrix, the matrix names an identifier the definition does not, or a row breaks the column rules above. It is not yet run in continuous integration. Once a CI step runs it, that step's result will be the evidence for `QA-01-T01`.
 
 The matrix is a living record. Planned test types can change when the test is written; record the change in the pull request that makes it.
