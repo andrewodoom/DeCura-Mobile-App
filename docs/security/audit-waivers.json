@@ -1,0 +1,12 @@
+[
+  {
+    "advisory": "GHSA-mrhx-c7xc-m3w5",
+    "package": "zod",
+    "severity": "high",
+    "dependents": ["@expo/cli", "eslint-plugin-react-hooks", "zod-validation-error"],
+    "reason": "zod 3.25.76 is reached only through developer tools: expo > @expo/cli 58.1.17 (dev server tool plugin schemas), and eslint-config-expo > eslint-plugin-react-hooks 7.1.1, directly and through zod-validation-error 4.0.2. None is in the app bundle. The fix exists only in zod 4.6.6, and both dependents require zod ^3.",
+    "exit_condition": "No installed package resolves a zod version below 4.6.6.",
+    "expires": "2026-11-28",
+    "approved_by": "Andrew Kofi Odoom (owner), 29 October 2026; security-devops review in docs/reviews/2026-10-29-m0-expo-project.md"
+  }
+]
