@@ -60,7 +60,7 @@ Not copied from the template: `AGENTS.md` and `.claude/settings.json` (agent con
 | Source | Item | Reason |
 |---|---|---|
 | Security C5 | CODEOWNERS with required code-owner review | **Not adopted for now.** The owner is the only contributor. GitHub does not let an author approve their own pull request, so required code-owner review would block every merge. Revisit when a second contributor joins. Fork pull requests cannot reach secrets or write to the repository (verified by security). |
-| Mobile F3 | App slug `decura` | Owner to confirm before `eas init`; recorded in the build-profiles change |
+| Mobile F3 | App slug | **Decided 29 October 2026 by the owner (Andrew Kofi Odoom): `decuradbs`.** Changed in `app.json` before `eas init`, so no EAS project carries the old slug. The display `name` stays until the build-profiles change (SEC-05). |
 | Mobile F6 | Separate `tsconfig.test.json` | Optional; revisit if test globals leak into app code |
 | Mobile F7 | tsconfig `include` for typed routes | With the Expo Router change |
 | Mobile F11 | Placeholder smoke test | Replaced with the first real screen |
