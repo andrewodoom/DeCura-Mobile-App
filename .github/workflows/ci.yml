@@ -1,0 +1,110 @@
+# Continuous integration for DeCura. Contributes to DECURA-REL1-2026-001: SEC-01, SEC-07, SEC-14, QA-04.
+# Every third-party action is pinned to a full commit hash; the comment names the release.
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  # Weekly, so new advisories against an unchanged lockfile are caught (SEC-07).
+  schedule:
+    - cron: '0 6 * * 1'
+
+# Read-only token for every job. No job can push, comment or change settings.
+permissions:
+  contents: read
+
+# A newer push to a pull request cancels its older run. Each push to main has its
+# own group and is never cancelled or replaced, so every merge commit keeps a
+# completed CI record (QA-04).
+concurrency:
+  group: ci-${{ github.ref }}-${{ github.event_name == 'push' && github.sha || 'pr' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  secret-scan:
+    name: Secret scan (full history)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out every commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install gitleaks (checksum verified)
+        env:
+          GITLEAKS_VERSION: 8.30.1
+          GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+        # Only the gitleaks folder goes on PATH, not the whole of $RUNNER_TEMP.
+        run: |
+          bin_dir="$RUNNER_TEMP/gitleaks-bin"
+          mkdir "$bin_dir"
+          cd "$RUNNER_TEMP"
+          curl -sSfL -o gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  gitleaks.tar.gz" | sha256sum --check --strict
+          tar -xzf gitleaks.tar.gz -C "$bin_dir" gitleaks
+          echo "$bin_dir" >> "$GITHUB_PATH"
+
+      - name: Scan the whole git history
+        run: gitleaks git --redact --verbose --exit-code 1 .
+
+  app-checks:
+    name: Audit, type check, lint and test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Temporary (deviation DEV-M0-01): there is no app project until milestone 0,
+      # part 1, item 3. That change deletes this step and every `if:` below that
+      # reads it, so from then on a missing lockfile fails the job instead of
+      # skipping it. Until then, a package.json without a lockfile fails, so the
+      # skip only happens while there is truly no app project.
+      - name: Look for the app project
+        id: project
+        run: |
+          if [ -f package.json ] && [ ! -f package-lock.json ]; then
+            echo "::error title=Lockfile missing::package.json exists but package-lock.json does not. Commit the npm lockfile."
+            exit 1
+          elif [ -f package-lock.json ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=App checks not run::No package-lock.json yet. Audit, type check, lint and tests start with the Expo project change."
+          fi
+
+      - name: Set up Node.js
+        if: steps.project.outputs.present == 'true'
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install exact locked dependencies
+        if: steps.project.outputs.present == 'true'
+        run: npm ci --ignore-scripts
+
+      # SEC-07: fail on any unresolved critical or high vulnerability.
+      - name: Dependency audit
+        if: ${{ !cancelled() && steps.project.outputs.present == 'true' }}
+        run: npm audit --audit-level=high
+
+      - name: Type check
+        if: ${{ !cancelled() && steps.project.outputs.present == 'true' }}
+        run: npm run typecheck
+
+      - name: Lint
+        if: ${{ !cancelled() && steps.project.outputs.present == 'true' }}
+        run: npm run lint
+
+      - name: Test
+        if: ${{ !cancelled() && steps.project.outputs.present == 'true' }}
+        run: npm test -- --ci
