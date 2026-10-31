@@ -8,7 +8,7 @@
 | Reviewers | Security and development operations; quality assurance and validation; data engineering; mobile engineering; privacy and regulatory, run independently and in parallel |
 | Requested by | Andrew Kofi Odoom |
 | Change classification | Major: new environment and a database-level security control. No user data, app logic or user-facing copy. |
-| Outcome | **Approve with conditions** from all five advisers. Conditions applied (section 3), owner actions open (section 4), deferred (section 5). |
+| Outcome | **Approve with conditions** from all five advisers. Conditions applied (section 3); owner actions in section 4 done on 31 October 2026, except the command-line token (deferred); deferred items in section 5. Development installation qualification IQ-DEV-001 complete. |
 
 ## 1. Verdicts
 
@@ -50,18 +50,18 @@ Observed on 30 October 2026, before commit: traceability check passes (95 identi
 | Security 3 (part), QA 5d | Automatic deployment off | Stated as a rule; owner to set and evidence (section 4) |
 | Data 3, Mobile | Schema `user` is a reserved word in PostgreSQL | Owner decided on 30 October 2026 to rename it `app_user`. DECURA-REL1-2026-001 version 1.2 (minor change, section 3.8 and change history); migration comment updated. Approved by the owner's merge of this change. |
 
-## 4. Open before merge (owner)
+## 4. Owner actions before merge
 
 | Source | Action | Status |
 |---|---|---|
 | Security C1 | Delete the exposed secret key (section 6); confirm no other unused secret keys; check API and Postgres logs from the time of exposure Closed 31 October 2026. Key deleted (reported 10:48 UTC); the owner confirmed no other secret keys remain; integrity inventory clean (section 6); logs for the last 60 minutes show only Supabase dashboard and platform calls, no data, authentication, storage or function requests. Free-plan log retention is short and may not reach back to the exposure, so the inventory is the primary evidence. Evidence and SHA-256 in the private store. |
 | Security C2, QA 5d | Screenshot the GitHub integration settings (directory, production branch, deploy toggle); set automatic deployment off | Done 31 October 2026, 12:06 Europe/Berlin: repository connected, working directory `.`, Deploy to production off, no production branch, automatic branching off. Migrations reach the project only through the reviewed `db push` procedure, so the integration path needs no separate trigger test. Screenshot and SHA-256 in the private store. |
 | QA 1, 3; Data 1 | Apply the migration to development and run SEC-02-T02 (procedure in `docs/environments.md`); record the output here | Done 31 October 2026, after the key incident closed. Test and expected results committed first (`892a68e`). Dry run listed only this migration; push applied it; `migration list` shows it local and remote. SEC-02-T02 output: "SEC-02-T02 PASS (7 of 7 cases passed) as role postgres; failed: none; all test objects rolled back". Supporting evidence for development only: SEC-02-T02 stays Not run in the matrix until an observed CI run. Full record with file SHA-256 values in the private store. |
-| Security 6, Privacy 6 | Confirm the eu-west-1 test project is deleted; organisation lists only eu-central-1 projects | Open |
-| QA 5 | Development set-up evidence: general settings, plan, members and two-factor authentication, exposed schemas, `migration list` output. No secret in any screenshot. Copied to the private store with SHA-256 checksums. | Open |
-| QA 5 | Decide whether the development installation qualification is formal or supporting (QA recommends supporting) and state it in DECURA-CSV-VAL-MOB-2026-001 | Owner decision |
-| Security 8 | Two-factor authentication on Supabase and GitHub; expire or revoke the command-line access token after use | Open |
-| Privacy 2 | Accept Supabase's data processing agreement; check it covers the free plan and names the transfer mechanism | Open |
+| Security 6, Privacy 6 | Confirm the eu-west-1 test project is deleted; organisation lists only eu-central-1 projects | Done: the owner confirmed deletion on 31 October 2026 (IQ-11) |
+| QA 5 | Development set-up evidence: general settings, plan, members and two-factor authentication, exposed schemas, `migration list` output. No secret in any screenshot. Copied to the private store with SHA-256 checksums. | Done 31 October 2026: settings, region, plan, members, versions and two-factor authentication recorded in IQ-DEV-001; screenshots and SHA-256 in the private store. Exposed schemas are the Supabase defaults; no application schema exists yet |
+| QA 5 | Decide whether the development installation qualification is formal or supporting (QA recommends supporting) and state it in DECURA-CSV-VAL-MOB-2026-001 | Owner decided on 31 October 2026: **formal** installation qualification (stricter than QA's recommendation). IQ-DEV-001 executed: 15 of 15 items pass, two-factor authentication after correction; deviations DEV-IQ-01 to 03 recorded. Record in the private store, SHA-256 `9f7bd96ab71159beb09d3117b1c2989ec458f881e918587aa966751c241ef927`. Approved by the owner's merge of this change. DECURA-CSV-VAL-MOB-2026-001 to be updated |
+| Security 8 | Two-factor authentication on Supabase and GitHub; expire or revoke the command-line access token after use | Two-factor authentication: done 31 October 2026 on GitHub and Supabase (IQ-07). Owner advised to add a backup Supabase authenticator. Command-line token: deferred; it is still needed for migrations, and is revoked or given an expiry before staging is created |
+| Privacy 2 | Accept Supabase's data processing agreement; check it covers the free plan and names the transfer mechanism | Done 31 October 2026: Supabase incorporates its Data Processing Addendum into the Terms of Service for all organisations, including this free-plan one (screenshot and SHA-256 in the private store; IQ-12). Before staging: file a dated copy of the DPA in force and confirm its transfer mechanism (privacy) |
 
 ## 5. Deferred
 
