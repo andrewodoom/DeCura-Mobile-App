@@ -3,10 +3,10 @@
 | | |
 |---|---|
 | Document | DECURA-REL1-2026-001 |
-| Version | 1.1 (requirements baseline, minor change) |
+| Version | 1.2 (requirements baseline, minor change) |
 | Owner and author | Andrew Kofi Odoom |
-| Date | 27 October 2026 |
-| Status | Approved. Version 1.0 approved by the owner's merge of pull request 2 on 27 October 2026 at 18:00:46 UTC. Version 1.1 is a minor change (section 12), approved by the owner's merge of its pull request. |
+| Date | 30 October 2026 |
+| Status | Approved. Version 1.0 approved by the owner's merge of pull request 2 on 27 October 2026 at 18:00:46 UTC. Versions 1.1 and 1.2 are minor changes (section 12), each approved by the owner's merge of its pull request. |
 | Review record | `docs/reviews/2026-10-27-release-1-definition.md` |
 
 ## 1. Purpose
@@ -157,7 +157,7 @@ No other person's data, including friends' or family members', enters any enviro
 - Products have an internal surrogate key. Barcodes sit in a child table with a unique constraint, because one product can have several barcodes.
 - Ingredients are normalised to the EU cosmetic ingredient inventory, with aliases in a child table.
 - Every catalogue record carries its source, the date it was checked, and the import run identifier. The import reads from one owner-maintained source file under version control in the private store.
-- Separate schemas: `reference` (catalogue), `user` (row-level security), `community`, `staging`.
+- Separate schemas: `reference` (catalogue), `app_user` (row-level security), `community`, `staging`. (`user` is a reserved word in PostgreSQL.)
 - Concerns, skin types and tags are stored as stable codes, never as display labels, so wording changes need no migration.
 - No future research or aggregate table is built from the community table.
 
@@ -306,6 +306,7 @@ DECURA-CSV-VAD-2026-001 is annotated as covering the prototype only.
 | 0.4 | 27 October 2026 | Re-review conditions from quality assurance, security and data engineering applied | Andrew Kofi Odoom, with Claude |
 | 1.0 | 27 October 2026 | Decision D7 confirmed; issued as the requirements baseline. Approved by merge of pull request 2, 18:00:46 UTC. | Andrew Kofi Odoom, with Claude |
 | 1.1 | 27 October 2026 | Minor change, no change to system behaviour: QA-05 report naming aligned with the validation plan (interim report at milestone 6, final report after stage 1); stage 0 validation role clarified; SEC-09 and SEC-10 cite the current version of the security verification standard; QA-05 corrected to the 44 documented prototype test cases | Andrew Kofi Odoom, with Claude |
+| 1.2 | 30 October 2026 | Minor change, no change to system behaviour: schema `user` renamed `app_user` in section 3.8, because `user` is a reserved word in PostgreSQL (review record `docs/reviews/2026-10-30-m0-supabase-environments.md`) | Andrew Kofi Odoom, with Claude |
 
 **Approval at version 1.0**
 

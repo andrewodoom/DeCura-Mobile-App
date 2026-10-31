@@ -69,3 +69,7 @@ All three remain subject to the regulatory specialist's confirmation before stag
 | DEV-GOV-01: private store under version control | Owner |
 
 The full version of this record, including the forward-looking findings, is held in the private store ("2026-10-30 Council review of cosmetic scope (full)").
+
+## 5. Approval
+
+Approved by the owner's merge of pull request 11 (`5150ba1`, merge commit `be55cb6`) by `andrewodoom` on 31 October 2026 at 10:18:54 UTC, after the secret scan and the audit, type check, lint and test checks passed. The pull request description was GitHub's default, the commit message, which names the change and this review record; the explicit statement of what the merge approves (non-negotiable 4, DECURA-SPEC-COS-2026-001 version 1.0 and the adviser briefs) is recorded here instead.
