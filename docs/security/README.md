@@ -22,6 +22,28 @@ A waiver is used only when no fixed version can be installed without breaking a 
 - When the exit condition is met, the change that removes the waiver records it in the review record.
 - When a waiver expires, the scheduled run fails on purpose. The owner of the waiver renews or removes it.
 
+## Dependency updates
+
+Every version resolved in `package-lock.json`, direct or transitive, is adopted only through a reviewed change, and only once it has been published for at least 14 days. The publication date is the npm registry `time` entry for that version (`npm view <package> time`). The rule applies from 31 October 2026; the milestone 0 baseline, including expo 58.0.21, was taken before it existed and is recorded as such in `docs/reviews/2026-10-31-ci-expo-version-reminder.md`.
+
+A version published more recently is adopted early only:
+- to fix a high or critical advisory, recording the advisory, that the release comes from the expected publisher (npm provenance where available), and a look at its changelog or diff; or
+- because a build or store submission requires it, recording the requirement.
+
+Either way the security-devops review records why.
+
+To adopt, resolve the whole tree as it stood 14 days ago, so a direct update cannot pull in younger transitive releases:
+
+```sh
+npm install <package>@<version> --before="<date 14 days ago, YYYY-MM-DDT00:00:00Z>"
+```
+
+Expo SDK packages move together in one change: `expo`, then the companions aligned to that `expo` with `EXPO_OFFLINE=1 npx expo install --fix` (the same `--before` date in `.npmrc` for that change), including `jest-expo`, `expo-status-bar`, `eslint-config-expo` and any package the SDK pins.
+
+Continuous integration checks Expo in two ways:
+- **Expo set consistency**, in the required job: every Expo package matches the versions bundled with the locked `expo` package. It runs offline, so its result depends only on the commit, and it blocks.
+- **Expo version drift**, its own job on the weekly and manual runs only: Expo expects newer versions than the lockfile has. It warns while a newer version is under 14 days old, fails once one is old enough to adopt, and fails if the check cannot run.
+
 ## Install scripts
 
 Continuous integration runs `npm ci --ignore-scripts`, and npm 11 blocks dependency install scripts locally unless approved. Three dev-only packages have install scripts. They are left unapproved because each has a working fallback:
