@@ -100,9 +100,12 @@ jobs:
           npm audit --json > reports/npm-audit.json || true
           scripts/check-audit.sh reports/npm-audit.json
 
-      # Every Expo package matches the versions SDK 58 expects.
-      - name: Expo dependency versions
+      # Every Expo package matches the versions bundled with the locked expo
+      # package. Offline, so the result depends only on this commit.
+      - name: Expo set consistency
         if: ${{ !cancelled() }}
+        env:
+          EXPO_OFFLINE: '1'
         run: npx expo install --check
 
       - name: Type check
@@ -132,3 +135,29 @@ jobs:
           path: reports/
           retention-days: 90
           if-no-files-found: warn
+
+  # Newer Expo releases than the lockfile has. Weekly and manual runs only, as its
+  # own job, so its result never hides the audit or the required check. Fails
+  # only once a newer version is old enough to adopt (docs/security/README.md).
+  expo-drift:
+    name: Expo version drift
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install exact locked dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Newer Expo versions
+        run: scripts/check-expo-drift.sh
