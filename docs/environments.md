@@ -77,7 +77,7 @@ Schema changes are SQL files in `supabase/migrations/`, applied in file name ord
 
 | Migration | Purpose | Development | Staging | Production |
 |---|---|---|---|---|
-| `20261030152438_enable_rls_on_new_tables.sql` | SEC-02 safety net: switches on row-level security for every new table outside PostgreSQL's and Supabase's own schemas | Not applied | Not applied | Not applied |
+| `20261030152438_enable_rls_on_new_tables.sql` | SEC-02 safety net: switches on row-level security for every new table outside PostgreSQL's and Supabase's own schemas | Applied 31 October 2026 by the owner, from commit `892a68e`; SEC-02-T02 passed 7 of 7 as `postgres` | Not applied | Not applied |
 
 Rollback for `20261030152438_enable_rls_on_new_tables.sql`, applied as a new migration only if needed. Tables created in the meantime keep row-level security on, which is the safe direction.
 
