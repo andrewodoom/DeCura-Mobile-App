@@ -39,13 +39,13 @@
 - `scripts/check-expo-drift.sh` with a stand-in `npx` and real npm publish dates: up to date, exit 0; drift to 58.0.22 (published 31 October), exit 0 with the warning "may be adopted from 2026-11-14"; drift to 58.0.2 (published 1 October), exit 1 with an error naming `expo@58.0.2`; command not found (exit 127), exit 1 with "could not run".
 - The workflow file parses as valid YAML. actionlint was not run.
 
-## 4. Evidence from continuous integration (to be added)
+## 4. Evidence from continuous integration
 
 | Case | Expected | Run |
 |---|---|---|
-| This pull request's run | "Expo set consistency" passes; job "Expo version drift" does not run | |
-| Manual run on this branch | "Expo version drift" concludes success with the 58.0.22 warning (inside 14 days) | |
-| Pull request 12 re-run after this merges into its branch | Required job passes | |
+| This pull request's run (pull request 13, head `ed93330`) | "Expo set consistency" passes; job "Expo version drift" does not run | [41203682292](https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/41203682292): success; drift job not run |
+| Manual run on this branch (`ed93330`) | "Expo version drift" concludes success with the 58.0.22 warning (inside 14 days) | [41203848188](https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/41203848188): all three jobs success; annotation "expo 58.0.22 was published on 2026-10-31; it may be adopted from 2026-11-14." |
+| Pull request 12 re-run after this merges into its branch | Required job passes | Recorded in `2026-10-30-m0-supabase-environments.md` |
 
 ## 5. Known issues and follow-ups
 
@@ -56,3 +56,7 @@
 | EAS profiles change: state the runtime policy; an Expo patch adoption needs a new build if the fingerprint policy is used (mobile 5) | Build-profile change |
 | Pull-request artifact names to use the head commit (open item from `2026-10-29-m0-expo-project.md`) | Not taken up here |
 | DECURA-CSV-VAL-MOB-2026-001: CI configuration as installed; section 4 cases as operational qualification cases; the adoption rule as a procedure | Owner |
+
+## 6. Approval
+
+Approved by the owner's merge of pull request 13 (`ed93330`, merge commit `073641a`) by `andrewodoom` on 31 October 2026 at 13:16:15 UTC, after its checks passed. The pull request description was the commit message.
