@@ -3,10 +3,15 @@
   "version": "1.0.0",
   "main": "index.ts",
   "dependencies": {
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@supabase/supabase-js": "~2.118.0",
     "expo": "~58.0.21",
+    "expo-crypto": "~58.0.7",
+    "expo-secure-store": "~58.0.2",
     "expo-status-bar": "~58.0.4",
     "react": "19.3.0",
-    "react-native": "0.88.1"
+    "react-native": "0.88.1",
+    "react-native-safe-area-context": "~5.10.1"
   },
   "devDependencies": {
     "@testing-library/react-native": "^14.1.0",
@@ -25,12 +30,16 @@
     "ios": "expo start --ios",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "jest"
+    "test": "jest",
+    "gen:types": "supabase gen types typescript --project-id fkqwophvgvprissnvumw --schema public > src/data/database.types.ts"
   },
   "private": true,
   "jest": {
     "preset": "jest-expo",
-    "passWithNoTests": false
+    "passWithNoTests": false,
+    "setupFiles": [
+      "./jest.setup.js"
+    ]
   },
   "engines": {
     "node": ">=24.22.2 <25"
