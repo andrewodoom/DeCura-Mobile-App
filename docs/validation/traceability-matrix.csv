@@ -1,15 +1,15 @@
 requirement,risk,test identifier,test type,result,evidence link
 REQ-ACC-01a,,REQ-ACC-01a-T01,end-to-end,Not run,
-REQ-ACC-01a,,REQ-ACC-01a-T02,unit,Not run,
-REQ-ACC-01a,,REQ-ACC-01a-T03,unit,Not run,
-REQ-ACC-01a,,REQ-ACC-01a-T04,unit,Not run,
-REQ-ACC-01a,,REQ-ACC-01a-T05,unit,Not run,
+REQ-ACC-01a,,REQ-ACC-01a-T02,unit,Pass,https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/41369936637
+REQ-ACC-01a,,REQ-ACC-01a-T03,unit,Pass,https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/41369936637
+REQ-ACC-01a,,REQ-ACC-01a-T04,unit,Pass,https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/41369936637
+REQ-ACC-01a,,REQ-ACC-01a-T05,unit,Pass,https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/41369936637
 REQ-ACC-01a,,REQ-ACC-01a-T06,inspection,Not run,
 REQ-ACC-01b,,REQ-ACC-01b-T01,integration,Not run,
-REQ-ACC-01b,,REQ-ACC-01b-T02,unit,Not run,
+REQ-ACC-01b,,REQ-ACC-01b-T02,unit,Pass,https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/41369936637
 REQ-ACC-01b,,REQ-ACC-01b-T03,inspection,Not run,
 REQ-ACC-01c,,REQ-ACC-01c-T01,integration,Not run,
-REQ-ACC-01c,,REQ-ACC-01c-T02,unit,Not run,
+REQ-ACC-01c,,REQ-ACC-01c-T02,unit,Pass,https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/41369936637
 REQ-ACC-02a,,REQ-ACC-02a-T01,integration,Not run,
 REQ-ACC-02b,,REQ-ACC-02b-T01,integration,Not run,
 REQ-ACC-02b,,REQ-ACC-02b-T02,manual,Not run,
@@ -73,17 +73,17 @@ REQ-COM-05b,,REQ-COM-05b-T01,integration,Not run,
 REQ-COM-06,,REQ-COM-06-T01,integration,Not run,
 REQ-COM-07,,REQ-COM-07-T01,integration,Not run,
 REQ-OFF-01,,REQ-OFF-01-T01,end-to-end,Not run,
-REQ-ARC-01,,REQ-ARC-01-T01,static analysis,Not run,
-REQ-ARC-01,,REQ-ARC-01-T02,unit,Not run,
+REQ-ARC-01,,REQ-ARC-01-T01,static analysis,Pass,https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/41369936637
+REQ-ARC-01,,REQ-ARC-01-T02,unit,Pass,https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/41369936637
 REQ-AUD-01,,REQ-AUD-01-T01,integration,Not run,
 REQ-AUD-01,,REQ-AUD-01-T02,integration,Not run,
 SEC-01,,SEC-01-T01,static analysis,Not run,
-SEC-01,,SEC-01-T02,unit,Not run,
-SEC-01,,SEC-01-T03,unit,Not run,
+SEC-01,,SEC-01-T02,unit,Pass,https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/41369936637
+SEC-01,,SEC-01-T03,unit,Pass,https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/41369936637
 SEC-02,,SEC-02-T01,integration,Not run,
 SEC-02,,SEC-02-T02,integration,Not run,
 SEC-03,,SEC-03-T01,manual,Not run,
-SEC-03,,SEC-03-T02,unit,Not run,
+SEC-03,,SEC-03-T02,unit,Pass,https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/41369936637
 SEC-04,,SEC-04-T01,integration,Not run,
 SEC-05,,SEC-05-T01,inspection,Not run,
 SEC-06,,SEC-06-T01,inspection,Not run,
@@ -110,7 +110,7 @@ QA-01,,QA-01-T01,static analysis,Pass,https://github.com/andrewodoom/DeCura-Mobi
 QA-02,,QA-02-T01,inspection,Not run,
 QA-03,,QA-03-T01,inspection,Not run,
 QA-04,,QA-04-T01,inspection,Not run,
-QA-04,,QA-04-T02,unit,Pass,https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/40915437424
+QA-04,,QA-04-T02,unit,Pass,https://github.com/andrewodoom/DeCura-Mobile-App/actions/runs/41369936637
 QA-05,,QA-05-T01,inspection,Not run,
 QA-06,,QA-06-T01,manual,Not run,
 QA-07,,QA-07-T01,inspection,Not run,
