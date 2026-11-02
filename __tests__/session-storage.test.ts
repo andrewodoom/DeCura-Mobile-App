@@ -130,6 +130,36 @@ describe('SEC-03-T02 session stored encrypted, key in the secure store', () => {
     expect(await storage.getItem('b')).toBe('2');
   });
 
+  it('keeps the session when the key store cannot be read, and creates no new key', async () => {
+    const keys = memoryKeys();
+    const blobs = memoryBlobs();
+    await createEncryptedSessionStorage({ keys, blobs, cipher: webAesGcm }).setItem('sb-session', session);
+    const key = keys.values.get(SESSION_KEY_NAME);
+    const get = jest.spyOn(keys, 'get').mockRejectedValueOnce(new Error('Keychain locked'));
+    const set = jest.spyOn(keys, 'set');
+
+    const storage = createEncryptedSessionStorage({ keys, blobs, cipher: webAesGcm });
+
+    await expect(storage.getItem('sb-session')).rejects.toThrow('Keychain locked');
+    expect(blobs.values.has('sb-session')).toBe(true);
+    expect(set).not.toHaveBeenCalled();
+    expect(keys.values.get(SESSION_KEY_NAME)).toBe(key);
+
+    // Once the key store can be read again, the same session comes back.
+    expect(await storage.getItem('sb-session')).toBe(session);
+    expect(get).toHaveBeenCalledTimes(2);
+  });
+
+  it('never creates a key when only reading', async () => {
+    const keys = memoryKeys();
+    const blobs = memoryBlobs();
+    blobs.values.set('sb-session', 'not-a-ciphertext');
+    const set = jest.spyOn(keys, 'set');
+
+    expect(await createEncryptedSessionStorage({ keys, blobs, cipher: webAesGcm }).getItem('sb-session')).toBeNull();
+    expect(set).not.toHaveBeenCalled();
+  });
+
   it('removes a stored session', async () => {
     const blobs = memoryBlobs();
     const storage = createEncryptedSessionStorage({ keys: memoryKeys(), blobs, cipher: webAesGcm });

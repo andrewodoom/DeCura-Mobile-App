@@ -8,20 +8,33 @@ module.exports = defineConfig([
     ignores: ['dist/*', 'reports/*', 'ios/*', 'android/*', '.expo/*'],
   },
   // REQ-ARC-01: app code reaches Supabase only through the typed data layer in
-  // src/data. Tests may import Supabase to build fixtures.
+  // src/data: neither the Supabase packages nor the client module are imported
+  // anywhere else, by import, require() or import(). Tests may import Supabase
+  // to build fixtures.
   {
-    files: ['App.tsx', 'index.ts', 'src/**'],
-    ignores: ['src/data/**'],
+    files: ['**/*.{ts,tsx,js,jsx}'],
+    ignores: ['src/data/**', '__tests__/**', 'eslint.config.js'],
     rules: {
       'no-restricted-imports': [
         'error',
         {
           patterns: [
             {
-              group: ['@supabase/*'],
+              group: ['@supabase/*', '**/data/client'],
               message: 'Use the typed data layer in src/data instead (REQ-ARC-01).',
             },
           ],
+        },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "CallExpression[callee.name='require'][arguments.0.value=/^@supabase\\/|data\\/client$/]",
+          message: 'Use the typed data layer in src/data instead (REQ-ARC-01).',
+        },
+        {
+          selector: 'ImportExpression[source.value=/^@supabase\\/|data\\/client$/]',
+          message: 'Use the typed data layer in src/data instead (REQ-ARC-01).',
         },
       ],
     },

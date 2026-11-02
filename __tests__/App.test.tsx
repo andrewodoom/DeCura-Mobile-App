@@ -18,13 +18,22 @@ const mockedConfig = jest.mocked(readSupabaseConfig);
 
 beforeEach(() => {
   mockedSubscribe.mockReset();
+  mockedSubscribe.mockReturnValue(() => {});
   mockedConfig.mockReset();
   mockedConfig.mockReturnValue({ url: 'https://example.supabase.co', publishableKey: 'sb_publishable_example' });
 });
 
 // Proves the test runner, the jest-expo preset and React Native rendering work
-// in continuous integration (QA-04), and that the app root follows the session.
+// in continuous integration (QA-04).
 describe('QA-04-T02 test tooling', () => {
+  it('renders the app root', async () => {
+    await render(<App />);
+
+    expect(await screen.findByLabelText('Loading')).toBeOnTheScreen();
+  });
+});
+
+describe('REQ-ACC-01a-T04 the app root follows the session', () => {
   it('shows sign-in when there is no session, and the signed-in screen after', async () => {
     let listener: (user: SignedInUser | null) => void = () => {};
     mockedSubscribe.mockImplementation((next) => {
@@ -39,8 +48,10 @@ describe('QA-04-T02 test tooling', () => {
     await act(async () => listener({ email: 'owner@example.com' }));
     expect(await screen.findByText('Signed in as owner@example.com.')).toBeOnTheScreen();
   });
+});
 
-  it('says the app is not set up when its connection settings are missing', async () => {
+describe('SEC-01-T03 the app stops before using Supabase when its settings are invalid', () => {
+  it('says the app is not set up, and never subscribes to a session', async () => {
     mockedConfig.mockImplementation(() => {
       throw new Error('EXPO_PUBLIC_SUPABASE_URL is not set');
     });

@@ -43,9 +43,17 @@ The app signs in with an email address and a six-digit code (REQ-ACC-01a) and ne
 |---|---|---|
 | New sign-ups | Authentication, Sign In / Providers | "Allow new users to sign up" off |
 | Code length | Authentication, Sign In / Providers, Email | Email OTP length 6 |
-| Code expiry | Authentication, Sign In / Providers, Email | Email OTP expiration 600 seconds (REQ-ACC-01c) |
+| Code expiry | Authentication, Sign In / Providers, Email | Email OTP expiration 600 seconds (REQ-ACC-01c). The app's copy reads `CODE_EXPIRY_MINUTES` in `src/data/auth.ts`; change both together. |
 | Email content | Authentication, Emails, "Magic link" template | The code (`{{ .Token }}`) only, with no link (REQ-ACC-01a) |
+| Other email templates | Authentication, Emails | "Confirm signup", "Invite user", "Change email address", "Reset password" and "Reauthentication" each either show the code only, with no link, or are recorded as unused. Accounts are added with "Add user", never "Invite user", which sends a link. |
+| Site URL | Authentication, URL Configuration | One fixed address, no wildcard. The app never opens it. |
+| Redirect URLs | Authentication, URL Configuration | Empty |
+| Region | Project settings, General | Frankfurt (eu-central-1). The project address does not show the region. |
 | Invited accounts | Authentication, Users, "Add user" | One per test address, created by the owner, email confirmed |
+
+Each setting is evidenced by a dated screenshot in the private store, with its SHA-256, as part of the environment's installation qualification (REQ-ACC-01a-T06, REQ-ACC-01b-T03). CAPTCHA on code requests is decided with the rate limits (SEC-13).
+
+Until the server-side invite list exists, the app hides whether an address has an account, but a direct call to Supabase with the public publishable key does not (REQ-ACC-01c). Development holds owner-controlled test addresses only, so nothing can be learned there. The invite-list change closes this before staging.
 
 In development, the users the owner adds stand in for the invite list. The server-held invite list, token lifetimes (REQ-ACC-02a) and session expiry (REQ-ACC-02b) follow in their own change.
 
@@ -70,7 +78,7 @@ npx supabase link --project-ref <reference>
 
 `supabase/config.toml` configures the local stack (`supabase start`) only. It is never pushed to a hosted project (`supabase config push` is not used), because its authentication defaults are weaker than the release requires. Each hosted project's settings are set in the dashboard and evidenced by dated screenshots.
 
-The local stack needs Docker. From a physical device or the Android emulator, `127.0.0.1` does not reach it; use the computer's network address or `10.0.2.2`.
+The local stack needs Docker. It is for database work and tests only: the app accepts only a hosted `https://<reference>.supabase.co` address (`src/config/env.ts`, SEC-01), so it never points at the local stack.
 
 ## GitHub integration
 

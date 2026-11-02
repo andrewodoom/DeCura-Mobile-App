@@ -10,7 +10,9 @@ jest.mock('../src/data/client', () => ({
 }));
 
 const notInvited = new AuthApiError('Signups not allowed for otp', 422, 'otp_disabled');
-const rateLimited = new AuthApiError('Too many requests', 429, 'over_email_send_rate_limit');
+const emailSendLimit = new AuthApiError('For security purposes, you can only request this after 60 seconds.', 429, 'over_email_send_rate_limit');
+const requestLimit = new AuthApiError('Request rate limit reached', 429, 'over_request_rate_limit');
+const serverError = new AuthApiError('Internal server error', 500, 'unexpected_failure');
 const offline = new AuthRetryableFetchError('Failed to fetch', 0);
 
 beforeEach(() => {
@@ -18,7 +20,7 @@ beforeEach(() => {
   mockVerifyOtp.mockReset();
 });
 
-describe('REQ-ACC-01b-T02 the app never creates an account', () => {
+describe('REQ-ACC-01b-T02 the app never creates an account (app side)', () => {
   it('asks for a code without account creation', async () => {
     mockSignInWithOtp.mockResolvedValue({ error: null });
 
@@ -31,7 +33,7 @@ describe('REQ-ACC-01b-T02 the app never creates an account', () => {
   });
 });
 
-describe('REQ-ACC-01c-T02 the same result whether or not an account exists', () => {
+describe('REQ-ACC-01c-T02 the app shows the same result whether or not an account exists (app side)', () => {
   it('reports an address without an account exactly as one with an account', async () => {
     mockSignInWithOtp.mockResolvedValueOnce({ error: null });
     const invited = await requestCode('owner@example.com');
@@ -42,12 +44,30 @@ describe('REQ-ACC-01c-T02 the same result whether or not an account exists', () 
     expect(invited).toEqual({ ok: true });
   });
 
-  it('reports rate limits and lost connections, which say nothing about the account', async () => {
-    mockSignInWithOtp.mockResolvedValueOnce({ error: rateLimited });
-    expect(await requestCode('owner@example.com')).toEqual({ ok: false, reason: 'rate_limited' });
+  it('gives the same results for two requests in a row, invited or not', async () => {
+    // Supabase limits repeat sends only for addresses with an account.
+    mockSignInWithOtp.mockResolvedValueOnce({ error: null }).mockResolvedValueOnce({ error: emailSendLimit });
+    const invited = [await requestCode('owner@example.com'), await requestCode('owner@example.com')];
+    mockSignInWithOtp.mockResolvedValueOnce({ error: notInvited }).mockResolvedValueOnce({ error: notInvited });
+    const uninvited = [await requestCode('stranger@example.com'), await requestCode('stranger@example.com')];
 
-    mockSignInWithOtp.mockResolvedValueOnce({ error: offline });
-    expect(await requestCode('owner@example.com')).toEqual({ ok: false, reason: 'network' });
+    expect(invited).toEqual(uninvited);
+  });
+
+  it.each([
+    ['a request-rate limit', requestLimit, 'rate_limited'],
+    ['a lost connection', offline, 'network'],
+    ['a server error', serverError, 'unavailable'],
+  ])('reports %s, which says nothing about the account', async (_case, error, reason) => {
+    mockSignInWithOtp.mockResolvedValueOnce({ error });
+
+    expect(await requestCode('owner@example.com')).toEqual({ ok: false, reason });
+  });
+
+  it('reports a failure that is not from Supabase Auth as unavailable', async () => {
+    mockSignInWithOtp.mockRejectedValueOnce(new Error('Storage failed'));
+
+    expect(await requestCode('owner@example.com')).toEqual({ ok: false, reason: 'unavailable' });
   });
 });
 
@@ -60,12 +80,19 @@ describe('REQ-ACC-01a-T02 verifying a six-digit code', () => {
   });
 
   it.each([
-    [new AuthApiError('Token has expired or is invalid', 403, 'otp_expired'), 'invalid_code'],
-    [rateLimited, 'rate_limited'],
-    [offline, 'network'],
-  ])('maps %p to %s', async (error, reason) => {
+    ['an expired or wrong code', new AuthApiError('Token has expired or is invalid', 403, 'otp_expired'), 'invalid_code'],
+    ['a rate limit', requestLimit, 'rate_limited'],
+    ['a lost connection', offline, 'network'],
+    ['a server error', serverError, 'unavailable'],
+  ])('maps %s to %s', async (_case, error, reason) => {
     mockVerifyOtp.mockResolvedValue({ error });
 
     expect(await verifyCode('owner@example.com', '123456')).toEqual({ ok: false, reason });
+  });
+
+  it('reports a failure to store the session as unavailable, not as a wrong code', async () => {
+    mockVerifyOtp.mockRejectedValue(new Error('Keychain locked'));
+
+    expect(await verifyCode('owner@example.com', '123456')).toEqual({ ok: false, reason: 'unavailable' });
   });
 });

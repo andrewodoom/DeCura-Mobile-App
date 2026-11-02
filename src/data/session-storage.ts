@@ -36,22 +36,32 @@ export function createEncryptedSessionStorage(deps: {
   cipher: Cipher;
 }): SessionStorage {
   const { keys, blobs, cipher } = deps;
-  let key: Promise<string> | undefined;
+  let cached: string | undefined;
+  let creating: Promise<string> | undefined;
 
-  function sessionKey(): Promise<string> {
-    key ??= (async () => {
-      const stored = await keys.get(SESSION_KEY_NAME);
-      if (stored) {
-        return stored;
+  // Reads the key. A failure to read (for example the Keychain while the device
+  // is locked) is thrown, never treated as "no key": the stored session must
+  // survive a key store that is only temporarily unavailable.
+  async function readKey(): Promise<string | null> {
+    cached ??= (await keys.get(SESSION_KEY_NAME)) ?? undefined;
+    return cached ?? null;
+  }
+
+  // Creates the key only when writing, and only after a successful read found none.
+  function keyForWriting(): Promise<string> {
+    creating ??= (async () => {
+      const existing = await readKey();
+      if (existing) {
+        return existing;
       }
       const created = await cipher.generateKey();
       await keys.set(SESSION_KEY_NAME, created);
+      cached = created;
       return created;
-    })().catch((error: unknown) => {
-      key = undefined;
-      throw error;
+    })().finally(() => {
+      creating = undefined;
     });
-    return key;
+    return creating;
   }
 
   return {
@@ -60,18 +70,23 @@ export function createEncryptedSessionStorage(deps: {
       if (ciphertext === null) {
         return null;
       }
+      const key = await readKey();
       try {
-        return await cipher.decrypt(await sessionKey(), ciphertext, name);
+        if (key === null) {
+          throw new Error('No session key');
+        }
+        return await cipher.decrypt(key, ciphertext, name);
       } catch {
-        // Wrong key (for example after a reinstall) or a changed ciphertext.
-        // The session is unusable: drop it, and the user signs in again.
+        // The key store was read and has no matching key (for example after a
+        // backup restore to a new device), or the ciphertext was changed. The
+        // session can never be decrypted: drop it, and the user signs in again.
         // Local journal data is never touched here (REQ-ACC-02b).
         await blobs.removeItem(name);
         return null;
       }
     },
     async setItem(name, value) {
-      await blobs.setItem(name, await cipher.encrypt(await sessionKey(), value, name));
+      await blobs.setItem(name, await cipher.encrypt(await keyForWriting(), value, name));
     },
     async removeItem(name) {
       await blobs.removeItem(name);

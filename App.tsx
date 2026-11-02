@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { SignInScreen } from './src/auth/SignInScreen';
 import { readSupabaseConfig } from './src/config/env';
 import { subscribeToUser, type SignedInUser } from './src/data/auth';
-import { Body, Screen, Title } from './src/ui/components';
+import { Body, Loading, Screen, Title } from './src/ui/components';
 
 type RootState = { name: 'loading' } | { name: 'signedOut' } | { name: 'signedIn'; user: SignedInUser } | { name: 'notConfigured' };
 
@@ -28,17 +29,17 @@ export default function App() {
   }, [configured]);
 
   return (
-    <>
+    <SafeAreaProvider>
       <AppContent state={state} />
       <StatusBar style="dark" />
-    </>
+    </SafeAreaProvider>
   );
 }
 
 function AppContent({ state }: { state: RootState }) {
   switch (state.name) {
     case 'loading':
-      return <Screen>{null}</Screen>;
+      return <Loading />;
     case 'notConfigured':
       return (
         <Screen>
