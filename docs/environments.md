@@ -35,6 +35,26 @@ Copy `.env.example` to `.env` and fill these in. `.env` is ignored by git and is
 
 Expo builds every `EXPO_PUBLIC_` variable into the app bundle. A secret key (`sb_secret_...`), service_role key or database password must never be put in one, or anywhere in the repository (SEC-01). Server-side code reads secrets from Supabase's secret store. A secret key that is exposed anywhere, including a chat or a screenshot, is deleted at once and the exposure recorded.
 
+## Sign-in settings
+
+The app signs in with an email address and a six-digit code (REQ-ACC-01a) and never creates an account (REQ-ACC-01b). Each hosted project is set up by hand in the dashboard, because `supabase/config.toml` is never pushed. Dashboard labels may differ slightly from those below.
+
+| Setting | Where | Value |
+|---|---|---|
+| New sign-ups | Authentication, Sign In / Providers | "Allow new users to sign up" off |
+| Code length | Authentication, Sign In / Providers, Email | Email OTP length 6 |
+| Code expiry | Authentication, Sign In / Providers, Email | Email OTP expiration 600 seconds (REQ-ACC-01c) |
+| Email content | Authentication, Emails, "Magic link" template | The code (`{{ .Token }}`) only, with no link (REQ-ACC-01a) |
+| Invited accounts | Authentication, Users, "Add user" | One per test address, created by the owner, email confirmed |
+
+In development, the users the owner adds stand in for the invite list. The server-held invite list, token lifetimes (REQ-ACC-02a) and session expiry (REQ-ACC-02b) follow in their own change.
+
+The session is stored encrypted on the device, with its key in the secure store (`src/data/device-session-storage.ts`, SEC-03).
+
+## Database types
+
+`src/data/database.types.ts` is generated, never edited by hand (REQ-ARC-01). Regenerate it after every migration with `npm run gen:types`, which reads `decura-dev` using the command-line login.
+
 ## Command-line tool
 
 The Supabase command-line tool is a pinned development dependency (`supabase` in `package.json`). Its binary comes from a platform package (`@supabase/cli-<platform>`), so it also installs under `npm ci --ignore-scripts`. Update the pin only through change control, to a version at least 14 days old, after reading its release notes.
